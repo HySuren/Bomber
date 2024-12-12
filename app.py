@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 SMS_RATE_LIMIT = 2
 DELIVERY_CHECK_ATTEMPTS = 10
-DELIVERY_CHECK_INTERVAL = 2
+DELIVERY_CHECK_INTERVAL = 5
 
 service_index = 0
 
