@@ -8,6 +8,9 @@ from fastapi_utils.tasks import repeat_every
 from services.ayurveda_service import send_sms_to_ayurveda
 from services.thai_traditions_service import send_sms_to_thai_traditions
 from services.dommalera_service import send_sms_to_dommalera
+from services.obi_service import send_sms_to_obi
+from services.four_lapy_service import send_sms_to_4lapy
+from services.beautery_service import send_sms_to_beautery
 from utils.validators import validate_and_format_number
 
 app = FastAPI()
@@ -17,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 SMS_RATE_LIMIT = 2
 DELIVERY_CHECK_ATTEMPTS = 10
-DELIVERY_CHECK_INTERVAL = 5
+DELIVERY_CHECK_INTERVAL = 2
 
 service_index = 0
 
@@ -44,11 +47,11 @@ def check_delivery_status(uid):
         for attempt in range(DELIVERY_CHECK_ATTEMPTS):
             try:
                 response = requests.get(f"{PhoneAgregator.CHECK_SMS_URL}?token={PhoneAgregator.API_TOKEN}&uid={uid}")
-                logger.debug(f"Проверка доставки SMS, попытка {attempt + 1}: {response.text}")
+                logger.info(f"Проверка доставки SMS, попытка {attempt + 1}: {response.text}")
                 response.raise_for_status()
                 data = response.json()
                 if data.get("success"):
-                    print(data)
+                    logger.info(data)
                     return True
                 elif data.get("status") == "STATUS_WAIT_CODE":
                     time.sleep(DELIVERY_CHECK_INTERVAL)
@@ -84,6 +87,12 @@ def send_sms_with_rate_limit(service: str, phone_number: str, uid: str = None):
                     send_sms_to_thai_traditions(formatted_number)
                 case "3":
                     send_sms_to_dommalera(formatted_number)
+                case "4":
+                    send_sms_to_obi(formatted_number)
+                case "5":
+                    send_sms_to_4lapy(formatted_number)
+                case "6":
+                    send_sms_to_beautery(formatted_number)
                 case _:
                     logger.error(f"Неизвестный сервис: {service}")
                     return

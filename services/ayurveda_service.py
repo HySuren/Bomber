@@ -9,7 +9,7 @@ def send_sms_to_ayurveda(phone_number: str):
             "data[firstname]": "Манга",
             "data[lastname]": "Live",
             "data[phone]": phone_number,
-            "data[email]": "example@mail.ru",
+            "data[email]": "examplesw@mail.ru",
             "wa_json_mode": "1",
             "need_redirects": "1",
             "contact_type": "person"
@@ -26,7 +26,6 @@ def send_sms_to_ayurveda(phone_number: str):
         }
 
         response = requests.post(url, data=form_data, headers=headers, proxies=proxies)
-
         return {"status_code": response.status_code, "response": response}
     except Exception as e:
         print(e)
