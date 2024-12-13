@@ -11,6 +11,8 @@ from services.dommalera_service import send_sms_to_dommalera
 from services.obi_service import send_sms_to_obi
 from services.four_lapy_service import send_sms_to_4lapy
 from services.beautery_service import send_sms_to_beautery
+from services.banki_ru_service import send_sms_to_thai_banki_ru
+from services.gazprom_bonus_service import send_sms_to_gazprombonus
 from utils.validators import validate_and_format_number
 
 app = FastAPI()
@@ -93,6 +95,10 @@ def send_sms_with_rate_limit(service: str, phone_number: str, uid: str = None):
                     send_sms_to_4lapy(formatted_number)
                 case "6":
                     send_sms_to_beautery(formatted_number)
+                case "7":
+                    send_sms_to_thai_banki_ru(formatted_number)
+                case "8":
+                    send_sms_to_gazprombonus(formatted_number)
                 case _:
                     logger.error(f"Неизвестный сервис: {service}")
                     return
