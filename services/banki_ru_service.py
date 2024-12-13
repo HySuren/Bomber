@@ -5,6 +5,7 @@ def send_sms_to_thai_banki_ru(phone_number: str):
     try:
         url = Services.BANKI_RU
 
+        print(phone_number[1::1])
         payload = {
             "phoneNumber": phone_number[1::1],
             "consent": {
@@ -25,7 +26,7 @@ def send_sms_to_thai_banki_ru(phone_number: str):
             "https": Proxy.PROXY_URL
         }
 
-        response = requests.post(url, data=payload, proxies=proxies, headers=headers)
+        response = requests.post(url, json=payload, proxies=proxies, headers=headers)
 
         return {"status_code": response.status_code, "response": response}
     except Exception as e:

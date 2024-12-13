@@ -4,7 +4,6 @@ from config import Proxy, Services
 def send_sms_to_gazprombonus(phone_number: str):
     try:
         url = Services.GAZPROMBONUS
-
         payload = {
             "phone_number": phone_number[1::1],
             "group_id": "USER_GROUP_CUSTOMER",
@@ -40,7 +39,7 @@ def send_sms_to_gazprombonus(phone_number: str):
             "https": Proxy.PROXY_URL
         }
 
-        response = requests.post(url, data=payload, proxies=proxies, headers=headers)
+        response = requests.post(url, json=payload, proxies=proxies, headers=headers)
 
         return {"status_code": response.status_code, "response": response}
     except Exception as e:
