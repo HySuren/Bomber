@@ -187,7 +187,7 @@ def generate_report(sheet, interval_minutes):
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         end_time = datetime.now()
-        start_time = end_time - timedelta(minutes=10)
+        start_time = end_time - timedelta(minutes=interval_minutes)
         cursor.execute(
             """SELECT service_name, SUM(delivered), SUM(not_delivered)
             FROM sms_stats WHERE timestamp BETWEEN ? AND ? GROUP BY service_name""",
@@ -252,7 +252,7 @@ def generate_report_task():
         if not sheet:
             logger.error("Не удалось подключиться к Google Sheets")
             return
-        generate_report(sheet, 10)  # Меняем интервал для теста на 1 минуту
+        generate_report(sheet, 10)
         logger.info("Отчёт успешно сгенерирован.")
     except Exception as e:
         logger.error(f"Ошибка в generate_report_task: {e}")
