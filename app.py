@@ -1,10 +1,17 @@
 import logging
+import threading
+import sqlite3
+import time
 import requests
-import  time
+import gspread
+from datetime import datetime, timedelta
 from config import PhoneAgregator, services, service_names
-from fastapi import FastAPI, HTTPException, Body
+from fastapi import FastAPI, HTTPException
 from fastapi_utils.tasks import repeat_every
+from utils.validators import validate_and_format_number
+from oauth2client.service_account import ServiceAccountCredentials
 
+# Импортируем сервисы
 from services.ayurveda_service import send_sms_to_ayurveda
 from services.thai_traditions_service import send_sms_to_thai_traditions
 from services.dommalera_service import send_sms_to_dommalera
@@ -13,226 +20,248 @@ from services.four_lapy_service import send_sms_to_4lapy
 from services.beautery_service import send_sms_to_beautery
 from services.banki_ru_service import send_sms_to_thai_banki_ru
 from services.gazprom_bonus_service import send_sms_to_gazprombonus
-from utils.validators import validate_and_format_number
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-from datetime import datetime
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
+# --- Constants ---
+DB_PATH = "sms_stats.db"
+DELIVERY_CHECK_ATTEMPTS = 10
+DELIVERY_CHECK_INTERVAL = 3  # seconds
 
-def initialize_google_sheet(sheet):
-    """Инициализация таблицы: добавление заголовков, если их нет."""
-    try:
-        headers = ["Service", "Delivered", "Not Delivered", "Timestamp"]
-        existing_data = sheet.get_all_values()
-        if not existing_data:  # Если таблица пуста
-            sheet.append_row(headers)
-            logger.info("Заголовки добавлены в таблицу.")
-        elif existing_data[0] != headers:  # Проверяем, что заголовки корректны
-            sheet.update('A1:D1', [headers])  # Обновляем первую строку
-            logger.info("Заголовки обновлены в таблице.")
-    except Exception as e:
-        logger.error(f"Ошибка инициализации Google Sheets: {e}")
+# --- Database Initialization ---
+def init_db():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute(
+        """CREATE TABLE IF NOT EXISTS sms_stats (
+            id INTEGER PRIMARY KEY,
+            service_name TEXT,
+            delivered INTEGER,
+            not_delivered INTEGER,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )"""
+    )
+    conn.commit()
+    conn.close()
 
+init_db()
+
+# --- Google Sheets Setup ---
 def connect_to_google_sheets(sheet_name):
     try:
         scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
         creds = ServiceAccountCredentials.from_json_keyfile_name("testwork-370710-d0dec9b47b1b.json", scope)
         client = gspread.authorize(creds)
-        print(client.open(sheet_name).sheet1)
         return client.open(sheet_name).sheet1
     except Exception as e:
-        print(f"Google: {e}")
+        logger.error(f"Google Sheets error: {e}")
+        return None
 
+# --- SMS Sending Logic ---
+class SmsServiceThread(threading.Thread):
+    def __init__(self, service_id, rate_limit, db_path):
+        super().__init__()
+        self.service_id = str(service_id)
+        self.rate_limit = rate_limit
+        self.db_path = db_path
+        self.last_sent_timestamps = []
+        self.stop_event = threading.Event()
 
-app = FastAPI()
+    def run(self):
+        while not self.stop_event.is_set():
+            try:
+                now = time.time()
+                self.last_sent_timestamps = [ts for ts in self.last_sent_timestamps if now - ts < 60]
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
+                if len(self.last_sent_timestamps) < self.rate_limit:
+                    phone_number, activation_id = self.fetch_phone_number()
+                    if phone_number:
+                        delivered = self.send_sms(phone_number, activation_id)
+                        self.update_stats(delivered)
+                        self.last_sent_timestamps.append(now)
+                else:
+                    time.sleep(5)  # Wait before next check
+            except Exception as e:
+                logger.error(f"Error in service {self.service_id}: {e}")
 
-SMS_RATE_LIMIT = 2
-DELIVERY_CHECK_ATTEMPTS = 10
-DELIVERY_CHECK_INTERVAL = 5
+    def stop(self):
+        self.stop_event.set()
 
-service_index = 0
-
-service_stats = {service: {"taken": 0, "delivered": 0} for service in services}
-last_sent_timestamps = {service: [] for service in services}
-
-
-def send_stats_to_google_sheets(sheet, stats, timestamp, time_interval: str):
-    """
-    Отправка статистики в Google Sheets:
-    1. Данные по сервисам.
-    2. Сводка Summary в конце с выделением.
-    """
-    try:
-        initialize_google_sheet(sheet)  # Убедимся, что заголовки есть
-
-        # Формируем строки для текущего отчета
-        rows = []
-        for service, data in stats.items():
-            delivered = data["delivered"]
-            not_delivered = data.get("not_delivered", 0)
-            rows.append([service_names[service], delivered, not_delivered, timestamp])
-
-        # Подсчет итогов (Summary)
-        total_delivered = sum(data["delivered"] for data in stats.values())
-        total_not_delivered = sum(data.get("not_delivered", 0) for data in stats.values())
-        summary_row = ["Summary", total_delivered, total_not_delivered, timestamp, time_interval]
-
-        # Добавляем строки отчета в таблицу
-        sheet.append_rows(rows + [summary_row])
-
-        # Определяем диапазон заливки для Summary
-        start_row = len(sheet.get_all_values()) - len(rows)
-        summary_row_index = start_row + len(rows)
-
-        # Заливка только строки Summary
-        sheet.format(f"A{summary_row_index}:D{summary_row_index}", {
-            "backgroundColor": {"red": 1, "green": 0.9, "blue": 0.9}  # Светло-красный цвет
-        })
-
-    except Exception as e:
-        logger.error(f"Ошибка записи статистики в Google Sheets: {e}")
-
-def fetch_phone_number():
-    """Получить номер телефона из API."""
-    try:
-        response = requests.get(f"{PhoneAgregator.GET_PHONE_NUMBER_URL}?token={PhoneAgregator.API_TOKEN}")
-        logger.info(f"Получен ответ API: {response.text}")
-        response.raise_for_status()
-        data = response.json()
-        return str(data.get('number')), data.get('activationId')
-    except Exception as e:
-        logger.error(f"Ошибка при запросе номера: {e}")
-        return None, None
-
-
-def check_delivery_status(uid):
-    """Проверяет статус доставки SMS."""
-    try:
-        for attempt in range(DELIVERY_CHECK_ATTEMPTS):
-            response = requests.get(f"{PhoneAgregator.CHECK_SMS_URL}?token={PhoneAgregator.API_TOKEN}&uid={uid}")
-            logger.info(f"Проверка доставки SMS, попытка {attempt + 1}: {response.text}")
+    def fetch_phone_number(self):
+        """Получение номера телефона и activationId."""
+        try:
+            response = requests.get(f"{PhoneAgregator.GET_PHONE_NUMBER_URL}?token={PhoneAgregator.API_TOKEN}")
             response.raise_for_status()
             data = response.json()
-            if data.get("success") and data.get("status") == "OK":
-                return True
-            elif data.get("status") == "STATUS_WAIT_CODE":
-                time.sleep(DELIVERY_CHECK_INTERVAL)
-        return False
-    except Exception as e:
-        logger.error(f"Ошибка проверки доставки: {e}")
-        return False
+            return str(data.get('number')), data.get('activationId')
+        except Exception as e:
+            logger.error(f"Error fetching phone number for service {self.service_id}: {e}")
+            return None, None
+
+    def send_sms(self, phone_number, activation_id):
+        """Отправка SMS через соответствующий сервис и проверка доставки."""
+        try:
+            formatted_number = validate_and_format_number(phone_number, service_names[self.service_id])
+            logger.info(f"Sending SMS via service {self.service_id} to {formatted_number}")
+
+            # Отправляем SMS через нужный сервис
+            if self.service_id == "1":
+                result = send_sms_to_ayurveda(formatted_number)
+            elif self.service_id == "2":
+                result = send_sms_to_thai_traditions(formatted_number)
+            elif self.service_id == "3":
+                result = send_sms_to_dommalera(formatted_number)
+            elif self.service_id == "4":
+                result = send_sms_to_obi(formatted_number)
+            elif self.service_id == "5":
+                result = send_sms_to_4lapy(formatted_number)
+            elif self.service_id == "6":
+                result = send_sms_to_beautery(formatted_number)
+            elif self.service_id == "7":
+                result = send_sms_to_thai_banki_ru(formatted_number)
+            elif self.service_id == "8":
+                result = send_sms_to_gazprombonus(formatted_number)
+            else:
+                logger.error(f"Service ID {self.service_id} is not supported.")
+                return False
+
+            if result.get("status_code") != 200:
+                logger.warning(f"SMS delivery failed during sending phase via service {self.service_id}")
+                return False
+
+            # Проверяем доставку SMS
+            return self.check_delivery_status(activation_id)
+        except Exception as e:
+            logger.error(f"Error sending SMS via service {self.service_id}: {e}")
+            return False
+
+    def check_delivery_status(self, activation_id):
+        """Проверка доставки SMS по activationId."""
+        try:
+            for attempt in range(DELIVERY_CHECK_ATTEMPTS):
+                response = requests.get(f"{PhoneAgregator.CHECK_SMS_URL}?token={PhoneAgregator.API_TOKEN}&uid={activation_id}")
+                logger.info(f"Checking delivery status for activationId {activation_id}, attempt {attempt + 1}: {response.text}")
+                response.raise_for_status()
+                data = response.json()
+
+                # Если SMS доставлено
+                if data.get("success"):
+                    return True
+
+                # Если статус "STATUS_WAIT_CODE", ждем перед следующей попыткой
+                if data.get("status") == "STATUS_WAIT_CODE":
+                    time.sleep(DELIVERY_CHECK_INTERVAL)
+            return False  # После 10 попыток считаем SMS недоставленным
+        except Exception as e:
+            logger.error(f"Error checking delivery status for activationId {activation_id}: {e}")
+            return False
+
+    def update_stats(self, delivered):
+        """Обновление статистики в базе данных сразу после получения ответа о доставке."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            service_name = service_names.get(self.service_id, "Unknown Service")
+            delivered_status = 1 if delivered else 0
+            not_delivered_status = 0 if delivered else 1
+
+            # Записываем статистику немедленно после каждого сообщения
+            print(service_name)
+            print(delivered_status)
+            print(not_delivered_status)
+            cursor.execute(
+                "INSERT INTO sms_stats (service_name, delivered, not_delivered, timestamp) VALUES (?, ?, ?, ?)",
+                (service_name, delivered_status, not_delivered_status, datetime.now()),
+            )
+
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            logger.error(f"Error updating stats in database: {e}")
 
 
-def send_sms_with_rate_limit(service: str, phone_number: str, uid: str = None):
+# --- Report Generation ---
+def generate_report(sheet, interval_minutes):
     try:
-        now = time.time()
-        last_sent_timestamps[service] = [
-            ts for ts in last_sent_timestamps[service] if now - ts < 60
-        ]
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        end_time = datetime.now()
+        start_time = end_time - timedelta(minutes=10)
+        cursor.execute(
+            """SELECT service_name, SUM(delivered), SUM(not_delivered)
+            FROM sms_stats WHERE timestamp BETWEEN ? AND ? GROUP BY service_name""",
+            (start_time, end_time)
+        )
+        rows = cursor.fetchall()
+        if not rows:
+            logger.warning(f"Нет данных для отчёта за последние {interval_minutes} минут.")
+            return
+        logger.info(f"Данные для отчёта: {rows}")
+        timestamp = end_time.strftime("%Y-%m-%d %H:%M:%S")
+        sheet.append_row(["Service", "Delivered", "Not Delivered", "Timestamp", f"Отчет за последние {interval_minutes}"])
 
-        if len(last_sent_timestamps[service]) < SMS_RATE_LIMIT:
-            formatted_number = validate_and_format_number(phone_number, service_names[service])
-            service_stats[service]["taken"] += 1
-            logger.info(f"Отправка через сервис {service}: {formatted_number}")
+        for row in rows:
+            sheet.append_row([row[0], row[1], row[2], timestamp])
 
-            # Вызов конкретного сервиса
-            result = None
-            match service:
-                case "1":
-                    result = send_sms_to_ayurveda(formatted_number)
-                case "2":
-                    result = send_sms_to_thai_traditions(formatted_number)
-                case "3":
-                    result = send_sms_to_dommalera(formatted_number)
-                case "4":
-                    result = send_sms_to_obi(formatted_number)
-                case "5":
-                    result = send_sms_to_4lapy(formatted_number)
-                case "6":
-                    result = send_sms_to_beautery(formatted_number)
-                case "7":
-                    result = send_sms_to_thai_banki_ru(formatted_number)
-                case "8":
-                    result = send_sms_to_gazprombonus(formatted_number)
-                case _:
-                    logger.error(f"Неизвестный сервис: {service}")
-                    return
-
-            if uid:
-                if check_delivery_status(uid):
-                    service_stats[service]["delivered"] += 1
-                else:
-                    service_stats[service]["not_delivered"] = service_stats[service].get("not_delivered", 0) + 1
-
-            last_sent_timestamps[service].append(now)
-            logger.info(f"SMS отправлено через {service_names[service]} на номер {formatted_number}")
-        else:
-            logger.warning(f"Превышен лимит отправки SMS для сервиса {service_names[service]}. Ожидание...")
+        conn.close()
     except Exception as e:
-        logger.error(f"Ошибка при отправке SMS через {service_names[service]}: {e}")
+        logger.error(f"Ошибка при генерации отчёта: {e}")
 
 
-@app.post("/sms/send")
-def receive_phone_number(phone_number: str = Body(..., embed=True)):
-    global service_index
 
-    if not phone_number:
-        raise HTTPException(status_code=400, detail="Номер телефона обязателен.")
+# --- FastAPI App ---
+app = FastAPI()
 
-    service = services[service_index]
-    service_index = (service_index + 1) % len(services)
-
-    send_sms_with_rate_limit(service, phone_number, u)
-    stats = service_stats[service]
-    return {
-        "message": f"SMS отправлено через сервис {service_names[service]}",
-        "stats": {
-            "taken": stats["taken"],
-            "delivered": stats["delivered"]
-        }
-    }
-
+service_threads = []
 
 @app.on_event("startup")
-@repeat_every(seconds=20)
-def periodic_sms_sender():
-    try:
-        phone_number, activation_id = fetch_phone_number()
-        if phone_number:
-            global service_index
-            service = services[service_index]
-            service_index = (service_index + 1) % len(services)
-            send_sms_with_rate_limit(service, phone_number, activation_id)
-        else:
-            logger.warning("Номер телефона не получен или ошибка API.")
-    except Exception as e:
-        logger.error(f"Ошибка при периодической отправке SMS: {e}")
+def startup():
+    global service_threads
 
+    # Определяем настройки для сервисов с ограничением по частоте
+    high_priority_services = [("2", 4), ("3", 4), ("4", 4), ("5", 4)]
+    low_priority_services = [("6", 2), ("7", 2), ("8", 2)]
 
+    for service_id, rate_limit in high_priority_services + low_priority_services:
+        thread = SmsServiceThread(service_id, rate_limit, DB_PATH)
+        thread.start()
+        service_threads.append(thread)
+
+@app.on_event("shutdown")
+def shutdown():
+    for thread in service_threads:
+        thread.stop()
+        thread.join()
+
+@app.get("/generate_report/{interval_minutes}")
+def api_generate_report(interval_minutes: int):
+    sheet = connect_to_google_sheets("ServicesData")
+    if not sheet:
+        raise HTTPException(status_code=500, detail="Unable to connect to Google Sheets")
+
+    generate_report(sheet, interval_minutes)
+    return {"message": "Report generated successfully"}
 
 @app.on_event("startup")
-@repeat_every(seconds=600)  # Каждые 10 минут
-def record_stats_every_10_minutes():
+@repeat_every(seconds=600)  # Интервал в секундах
+def generate_report_task():
     try:
+        logger.info("Запуск задачи генерации отчёта каждые 10 секунд.")
         sheet = connect_to_google_sheets("ServicesData")
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        send_stats_to_google_sheets(sheet, service_stats, timestamp, 'За 10 минуту')
-        logger.info("Статистика за 1 минут записана в Google Sheets.")
+        if not sheet:
+            logger.error("Не удалось подключиться к Google Sheets")
+            return
+        generate_report(sheet, 10)  # Меняем интервал для теста на 1 минуту
+        logger.info("Отчёт успешно сгенерирован.")
     except Exception as e:
-        logger.error(f"Ошибка записи статистики за 10 минут: {e}")
+        logger.error(f"Ошибка в generate_report_task: {e}")
 
 @app.on_event("startup")
-@repeat_every(seconds=3600)
-def record_hourly_summary():
-    try:
-        sheet = connect_to_google_sheets("ServicesData")
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        send_stats_to_google_sheets(sheet, service_stats, timestamp, 'За 1 час')
-        logger.info("Сводная статистика за час записана в Google Sheets.")
-    except Exception as e:
-        logger.error(f"Ошибка записи сводной статистики за час: {e}")
-
+@repeat_every(seconds=3600)  # каждый час
+def generate_hourly_report_task():
+    sheet = connect_to_google_sheets("ServicesData")
+    if not sheet:
+        logger.error("Unable to connect to Google Sheets")
+        return
+    generate_report(sheet, 60)
