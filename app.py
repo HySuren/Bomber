@@ -127,7 +127,7 @@ class SmsServiceThread(threading.Thread):
                 return False
 
             if result.get("status_code") != 200:
-                logger.warning(f"SMS delivery failed during sending phase via service {self.service_id}")
+                logger.warning(f"SMS delivery failed during sending phase via service {service_names[str(self.service_id)]}: {result.get('status_code')}")
                 return False
 
             # Проверяем доставку SMS
