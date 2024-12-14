@@ -16,7 +16,7 @@ def send_sms_to_gazprombonus(phone_number: str):
             "accept": "application/json",
             "Content-Type": "application/json",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-            "Cookie": "tmr_lvid=80595b63ea5274bb500fcae1e622126d; tmr_lvidTS=1734078479527; _ym_uid=1734078480561837476; _ym_d=1734078480; _ym_isad=1; _ym_visorc=b; SL_G_WPT_TO=ru; qrator_jsid2=v2.0.1734078493.743.4d4abbb2gGMlVHdO|aDHQ9OTkCYemFPbQ|iZyffd9BoDaLTcqEFv09pKI/BOewiXNEBLxgsswDPCQpYzxGxp91UgTiSUA+Tw+CwOwqtTasUxjgYL6GJKzJYnU7Z76tdS4vPHCd+g06ItvUBtb2EZG01E6tB2dzL4Ysj3voP861ezcMi8cSth6Edg==-HNF+1AiLstRlDp1zrAsSSs+b6hs=; flocktory-uuid=07c63c72-3997-48eb-96db-e7a2d1cda91e-1; domain_sid=f2t48aNJ5H7cLmcYYEypE%3A1734078482189; uxs_uid=2b1068d0-b92c-11ef-b57e-73faa8f8b70c; SL_GWPT_Show_Hide_tmp=1; SL_wptGlobTipTmp=1; tmr_detect=0%7C1734078484479",
+            "Cookie": "tmr_lvid=80595b63ea5274bb500fcae1e622126d; tmr_lvidTS=1734078479527; _ym_uid=1734078480561837476; _ym_d=1734078480; _ym_isad=1; SL_G_WPT_TO=ru; flocktory-uuid=07c63c72-3997-48eb-96db-e7a2d1cda91e-1; domain_sid=f2t48aNJ5H7cLmcYYEypE%3A1734078482189; uxs_uid=2b1068d0-b92c-11ef-b57e-73faa8f8b70c; SL_GWPT_Show_Hide_tmp=1; SL_wptGlobTipTmp=1; qrator_jsid2=v2.0.1734078493.743.4d4abbb2gGMlVHdO|jQ9wYVuO58nkHgF2|v3tlY8AldIJeunySt/lijajoEyEta/X3TsQzQlpMtFltHeCPxJ8bntQKAfKoJoIUAdyqzzyI8Zqpvq14rE6LSX4FH2TQWa7mMPwA/sOrzQ98ZK9ZFVYuItpxTRKrd6hsVQ1dzUznPPszQmW1x4yYQPqNfjpHAHL4p9FfuQfJUBo=-VgcTAwXDD1VsU4GM/26ywqP85TE=; tmr_detect=1%7C1734149398087;",
             "x-app-name": "Site",
             "x-app-version": "1.63.48",
             "x-client-os": "Windows",
