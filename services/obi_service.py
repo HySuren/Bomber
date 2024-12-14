@@ -27,7 +27,7 @@ def send_sms_to_obi(phone_number: str):
         response.raise_for_status()
 
         try:
-            response_json = response.json()
+            response_json = response
             return {"status_code": response.status_code, "response": response_json}
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}, Response: {response.text}")
