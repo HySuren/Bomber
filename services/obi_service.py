@@ -13,7 +13,7 @@ def send_sms_to_obi(phone_number: str):
         data = {
             "query": "mutation($phone_1:String!){startLogin(phone:$phone_1){exists,error{type}}}",
             "variables": {
-                "phone_1": phone_number
+                "phone_1": phone_number[1::1]
             }
         }
 
