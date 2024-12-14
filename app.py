@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 # --- Constants ---
 DB_PATH = "sms_stats.db"
 DELIVERY_CHECK_ATTEMPTS = 10
-DELIVERY_CHECK_INTERVAL = 3  # seconds
+DELIVERY_CHECK_INTERVAL = 6  # seconds
 
 # --- Database Initialization ---
 def init_db():
