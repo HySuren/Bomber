@@ -5,12 +5,11 @@ def send_sms_to_gazprombonus(phone_number: str):
     try:
         url = Services.GAZPROMBONUS
         payload = {
-            "phone_number": phone_number[1::1],
             "group_id": "USER_GROUP_CUSTOMER",
+            "phone_number": phone_number[1::1],
             "referrer_id": None,
             "type": "USER_AUTH_TYPE_PHONE_NUMBER"
         }
-
 
         headers = {
             "accept": "application/json",
@@ -39,8 +38,10 @@ def send_sms_to_gazprombonus(phone_number: str):
             "https": Proxy.PROXY_URL
         }
 
-        response = requests.post(url, json=payload, proxies=proxies, headers=headers)
+        response = requests.post(url, json=payload, headers=headers)
 
         return {"status_code": response.status_code, "response": response}
     except Exception as e:
         print(e)
+
+print(send_sms_to_gazprombonus('+79949995341'))
