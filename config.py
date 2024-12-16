@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-services = ["1","2", "3", "4", "5", "6", "7"]
+services = ["1", "2", "3", "4", "5", "6", "7"]
 
 service_names = {
     "1": "Dommalera",
