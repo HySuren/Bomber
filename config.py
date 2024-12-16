@@ -4,15 +4,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-services = ["1", "2", "3", "4", "5", "6"]
+services = ["2", "3", "4", "6"]
 
 service_names = {
-    "1": "Dommalera",
+    #"1": "Dommalera",
     #"4": "OBI",
     "2": "4LAPY",
     "3": "BEAUTERY",
     "4": "BANKI_RU",
-    "5": "KALINA_MALINA",
+    #"5": "KALINA_MALINA",
     "6": "TTraditions"
 }
 
