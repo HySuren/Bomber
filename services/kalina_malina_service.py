@@ -18,8 +18,9 @@ def send_sms_to_kalina_malina(phone_number: str):
             "https": Proxy.PROXY_URL
         }
 
-        response = requests.post(url, headers=headers, json=data)
-
+        response = requests.post(url, headers=headers, json=data, proxies=proxies)
+        with open('kalina.log', "w") as file:
+            file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         response.raise_for_status()
         try:
             response_json = response.json()
