@@ -13,7 +13,7 @@ def send_sms_to_obi(phone_number: str):
         data = {
             "query": "mutation($phone_1:String!){startLogin(phone:$phone_1){exists,error{type}}}",
             "variables": {
-                "phone_1": phone_number[1::1]
+                "phone_1": '79847072843'
             }
         }
 
@@ -28,7 +28,7 @@ def send_sms_to_obi(phone_number: str):
 
         try:
             response_json = response
-            return {"status_code": response.status_code, "response": response_json}
+            return {"status_code": response.status_code, "response": response_json.text}
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}, Response: {response.text}")
             return {"status_code": response.status_code, "response": response.text}

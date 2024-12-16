@@ -18,7 +18,7 @@ def validate_and_format_number(phone_number: str, service_name: str = None) -> s
         if len(phone_number) != 12 or not phone_number[2:].isdigit():
             raise ValueError("Invalid phone number length or non-digit characters found.")
 
-        if service_name == "Thai Traditions":
+        if service_name == "TTraditions":
             phone_number = f"+7 ({phone_number[2:5]}) {phone_number[5:8]}-{phone_number[8:10]}-{phone_number[10:]}"
         elif service_name == "Dommalera":
             pass
@@ -33,6 +33,8 @@ def validate_and_format_number(phone_number: str, service_name: str = None) -> s
         elif service_name == "BANKI_RU":
             pass
         elif service_name == "GAZPROMBONUS":
+            pass
+        elif service_name == "KALINA_MALINA":
             pass
         return phone_number
     except Exception as e:

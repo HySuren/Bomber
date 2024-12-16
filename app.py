@@ -20,6 +20,7 @@ from services.four_lapy_service import send_sms_to_4lapy
 from services.beautery_service import send_sms_to_beautery
 from services.banki_ru_service import send_sms_to_thai_banki_ru
 from services.gazprom_bonus_service import send_sms_to_gazprombonus
+from services.kalina_malina_service import send_sms_to_kalina_malina
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -107,21 +108,17 @@ class SmsServiceThread(threading.Thread):
 
             # Отправляем SMS через нужный сервис
             if self.service_id == "1":
-                result = send_sms_to_ayurveda(formatted_number)
-            elif self.service_id == "2":
-                result = send_sms_to_thai_traditions(formatted_number)
-            elif self.service_id == "3":
                 result = send_sms_to_dommalera(formatted_number)
-            elif self.service_id == "4":
-                result = send_sms_to_obi(formatted_number)
-            elif self.service_id == "5":
+            elif self.service_id == "2":
                 result = send_sms_to_4lapy(formatted_number)
-            elif self.service_id == "6":
+            elif self.service_id == "3":
                 result = send_sms_to_beautery(formatted_number)
-            elif self.service_id == "7":
+            elif self.service_id == "4":
                 result = send_sms_to_thai_banki_ru(formatted_number)
-            elif self.service_id == "8":
-                result = send_sms_to_gazprombonus(formatted_number)
+            elif self.service_id == "5":
+                result = send_sms_to_kalina_malina(formatted_number)
+            elif self.service_id == "6":
+                result = send_sms_to_thai_traditions(formatted_number)
             else:
                 logger.error(f"Service ID {self.service_id} is not supported.")
                 return False
