@@ -6,10 +6,10 @@ def send_sms_to_ayurveda(phone_number: str):
         url = Services.AYURVEDA_URL
 
         form_data = {
-            "data[firstname]": "Манга",
-            "data[lastname]": "Live",
+            "data[firstname]": "sssss",
+            "data[lastname]": "dddddd",
             "data[phone]": phone_number,
-            "data[email]": "examplesw@mail.ru",
+            "data[email]": "examplesssw@mail.ru",
             "wa_json_mode": "1",
             "need_redirects": "1",
             "contact_type": "person"

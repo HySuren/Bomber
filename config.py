@@ -4,16 +4,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-services = ["2", "3", "4", "6"]
+services = ["1","2", "3", "4", "5", "6", "7"]
 
 service_names = {
-    #"1": "Dommalera",
-    #"4": "OBI",
+    "1": "Dommalera",
     "2": "4LAPY",
     "3": "BEAUTERY",
     "4": "BANKI_RU",
-    #"5": "KALINA_MALINA",
-    "6": "TTraditions"
+    "5": "KALINA_MALINA",
+    "6": "TTraditions",
+    "7": "AYURVEDA"
 }
 
 class PhoneAgregator:
