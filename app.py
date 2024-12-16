@@ -217,7 +217,7 @@ def startup():
     global service_threads
 
     # Определяем настройки для сервисов с ограничением по частоте
-    high_priority_services = [("1", 2),("2", 5), ("3", 4),("4", 4) ("5", 4)]
+    high_priority_services = [("1", 2),("2", 5), ("3", 4),("4", 4), ("5", 4)]
     low_priority_services = [("6", 4),]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:
