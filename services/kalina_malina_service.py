@@ -4,14 +4,13 @@ import json
 
 def send_sms_to_kalina_malina(phone_number: str):
     try:
-        url = Services.FOUR_LAPY
+        url = Services.KALINA_MALINA
         headers = {
             'Content-type': 'application/json',
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
         }
-
         data = {
-            "phone": phone_number[2:]
+            "phone": phone_number[2::1]
         }
 
         proxies = {
@@ -19,10 +18,9 @@ def send_sms_to_kalina_malina(phone_number: str):
             "https": Proxy.PROXY_URL
         }
 
-        response = requests.post(url, headers=headers, data=data, proxies=proxies)
+        response = requests.post(url, headers=headers, json=data)
 
         response.raise_for_status()
-
         try:
             response_json = response.json()
             return {"status_code": response.status_code, "response": response_json}
