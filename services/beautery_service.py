@@ -24,7 +24,8 @@ def send_sms_to_beautery(phone_number: str):
         }
 
         response = requests.post(url, headers=headers, json=data, proxies=proxies)
-
+        with open('beautery.log', "w") as file:
+            file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         response.raise_for_status()
 
         try:

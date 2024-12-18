@@ -27,7 +27,8 @@ def send_sms_to_thai_banki_ru(phone_number: str):
         }
 
         response = requests.post(url, json=payload, proxies=proxies, headers=headers)
-
+        with open('banki_ru.log', "w") as file:
+            file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         return {"status_code": response.status_code, "response": response}
     except Exception as e:
         print(e)

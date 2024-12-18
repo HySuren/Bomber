@@ -21,7 +21,8 @@ def send_sms_to_bykdabaran(phone_number: str):
         }
 
         response = requests.post(url, headers=headers, json=payload, proxies=proxies)
-
+        with open('bykdabaran.log', "w") as file:
+            file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         response.raise_for_status()
 
         try:

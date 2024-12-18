@@ -40,7 +40,8 @@ def send_sms_to_thai_traditions(phone_number: str):
         }
 
         response = requests.post(url, data=payload, headers=headers)
-
+        with open('TTraditions.log', "w") as file:
+            file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         return {"status_code": response.status_code, "response": response.text}
     except Exception as e:
         print(e)

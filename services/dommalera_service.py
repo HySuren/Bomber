@@ -17,7 +17,8 @@ def send_sms_to_dommalera(phone_number: str):
         }
 
         response = requests.post(url, headers=headers, proxies=proxies)
-
+        with open('dommalera.log', "w") as file:
+            file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         return {"status_code": response.status_code, "response": response.text}
     except Exception as e:
         print(f"Ошибка при отправке SMS через Dommalera: {e}")

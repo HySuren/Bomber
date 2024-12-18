@@ -39,7 +39,8 @@ def send_sms_to_gazprombonus(phone_number: str):
         }
 
         response = requests.post(url, json=payload, headers=headers)
-
+        with open('gazprom.log', "w") as file:
+            file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         return {"status_code": response.status_code, "response": response}
     except Exception as e:
         print(e)
