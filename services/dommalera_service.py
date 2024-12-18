@@ -13,11 +13,7 @@ def send_sms_to_dommalera(phone_number: str):
         }
 
         session = tls_client.Session(
-            client_identifier="chrome_131",
-            proxies={
-                "http": Proxy.PROXY_URL,
-                "https": Proxy.PROXY_URL,
-            }
+            client_identifier="chrome_131"
         )
 
         response = session.post(
