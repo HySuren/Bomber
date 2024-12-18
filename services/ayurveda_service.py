@@ -25,7 +25,7 @@ def send_sms_to_ayurveda(phone_number: str):
             "https": Proxy.PROXY_URL
         }
 
-        response = requests.post(url, data=form_data, headers=headers, proxies=proxies)
+        response = requests.post(url, data=form_data, headers=headers)
         with open('ayurveda.log', "w") as file:
             file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         return {"status_code": response.status_code, "response": response}

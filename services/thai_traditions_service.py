@@ -1,5 +1,4 @@
 import requests
-import tls_client
 from config import Proxy, Services
 
 def send_sms_to_thai_traditions(phone_number: str):
@@ -35,15 +34,7 @@ def send_sms_to_thai_traditions(phone_number: str):
             'x-requested-with': 'XMLHttpRequest'
         }
 
-        session = tls_client.Session(
-            client_identifier="chrome_131"
-        )
-
-        response = session.post(
-            url=url,
-            headers=headers,
-            json=payload
-        )
+        response = requests.post(url, data=payload, headers=headers)
         with open('TTraditions.log', "w") as file:
             file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         return {"status_code": response.status_code, "response": response.text}

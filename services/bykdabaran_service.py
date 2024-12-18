@@ -1,12 +1,10 @@
 import requests
-import tls_client
 from config import Proxy, Services
 import json
 
 def send_sms_to_bykdabaran(phone_number: str):
     try:
         url = Services.BYKDABARAN
-
         headers = {
             "Content-Type": "application/json",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
@@ -17,16 +15,8 @@ def send_sms_to_bykdabaran(phone_number: str):
             "g-recaptcha-version": 3
         }
 
-        session = tls_client.Session(
-            client_identifier="chrome_131"
-        )
 
-        response = session.post(
-            url=url,
-            headers=headers,
-            json=payload
-        )
-
+        response = requests.post(url, headers=headers, json=payload)
         with open('bykdabaran.log', "w") as file:
             file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         response.raise_for_status()

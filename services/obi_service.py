@@ -1,5 +1,4 @@
 import requests
-import tls_client
 from config import Proxy, Services
 import json
 
@@ -18,16 +17,8 @@ def send_sms_to_obi(phone_number: str):
             }
         }
 
-        session = tls_client.Session(
-            client_identifier="chrome_131"
-        )
 
-        response = session.post(
-            url=url,
-            headers=headers,
-            json=data
-        )
-
+        response = requests.post(url, headers=headers, json=data)
         with open('obi.log', "w") as file:
             file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         response.raise_for_status()
