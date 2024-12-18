@@ -246,7 +246,7 @@ class SmsServiceThread(threading.Thread):
                 logger.error(f"Service ID {self.service_id} is not supported.")
                 return False
 
-            if result.get("status_code") != 200:
+            if result.get("status_code") != 200 and result.get("status_code") != 201:
                 logger.warning(
                     f"SMS delivery failed during sending phase via service {service_names[str(self.service_id)]}: {result.get('status_code')}")
                 return False
