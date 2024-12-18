@@ -1,6 +1,6 @@
-import requests
-from config import Proxy, Services
+import tls_client
 import json
+from config import Proxy, Services
 
 def send_sms_to_beautery(phone_number: str):
     try:
@@ -12,20 +12,29 @@ def send_sms_to_beautery(phone_number: str):
         }
 
         data = {
-        "full_name": "ghjkl;ljhb",
-        "user_phone": phone_number,
-        "email": "teru@mail.ru",
-
-    }
-
-        proxies = {
-            "http": Proxy.PROXY_URL,
-            "https": Proxy.PROXY_URL
+            "full_name": "ghjkl;ljhb",
+            "user_phone": phone_number,
+            "email": "teru@mail.ru",
         }
 
-        response = requests.post(url, headers=headers, json=data, proxies=proxies)
+        session = tls_client.Session(
+            client_identifier="chrome_131",
+            proxies={
+                "http": Proxy.PROXY_URL,
+                "https": Proxy.PROXY_URL,
+            }
+        )
+
+        response = session.post(
+            url=url,
+            headers=headers,
+            json=data
+        )
+
+        # Логирование ответа
         with open('beautery.log', "w") as file:
             file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
+
         response.raise_for_status()
 
         try:
@@ -34,9 +43,9 @@ def send_sms_to_beautery(phone_number: str):
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}, Response: {response.text}")
             return {"status_code": response.status_code, "response": response.text}
-    except requests.exceptions.RequestException as e:
-        print(f"Request error: {e}")
-        return {"status_code": response.status_code, "response": str(e)}
+    except tls_client.exceptions.TLSClientError as e:
+        print(f"TLS Client error: {e}")
+        return {"status_code": None, "response": str(e)}
     except Exception as e:
         print(f"Unhandled error: {e}")
         return {"status_code": None, "response": str(e)}

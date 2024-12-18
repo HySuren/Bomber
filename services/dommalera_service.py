@@ -1,4 +1,5 @@
 import requests
+import tls_client
 from config import Proxy, Services
 
 
@@ -11,12 +12,19 @@ def send_sms_to_dommalera(phone_number: str):
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
         }
 
-        proxies = {
-            "http": Proxy.PROXY_URL,
-            "https": Proxy.PROXY_URL
-        }
+        session = tls_client.Session(
+            client_identifier="chrome_131",
+            proxies={
+                "http": Proxy.PROXY_URL,
+                "https": Proxy.PROXY_URL,
+            }
+        )
 
-        response = requests.post(url, headers=headers, proxies=proxies)
+        response = session.post(
+            url=url,
+            headers=headers
+        )
+
         with open('dommalera.log', "w") as file:
             file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         return {"status_code": response.status_code, "response": response.text}
