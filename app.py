@@ -221,7 +221,7 @@ class SmsServiceThread(threading.Thread):
         """Отправка SMS через соответствующий сервис и проверка доставки."""
         try:
             formatted_number = validate_and_format_number(phone_number, service_names[self.service_id])
-            logger.info(f"Sending SMS via service {self.service_id} to {formatted_number}")
+            logger.info(f"Sending SMS via service {self.service_id} to {formatted_number}, activation_id: {activation_id}")
 
             # Отправляем SMS через нужный сервис
             if self.service_id == "1":
