@@ -23,8 +23,29 @@ from services.gazprom_bonus_service import send_sms_to_gazprombonus
 from services.kalina_malina_service import send_sms_to_kalina_malina
 from services.bykdabaran_service import send_sms_to_bykdabaran
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+# Настройка логгирования
+LOG_FILE = "debug.log"
+
+# Создаем кастомный логгер
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)  # Устанавливаем уровень логирования
+
+# Создаем обработчик для вывода в консоль
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)  # Уровень логирования для консоли
+
+# Создаем обработчик для записи в файл
+file_handler = logging.FileHandler(LOG_FILE)
+file_handler.setLevel(logging.DEBUG)  # Уровень логирования для файла
+
+# Формат логов
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+console_handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
+
+# Добавляем обработчики к логгеру
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
 
 # --- Constants ---
 DB_PATH = "sms_stats.db"
