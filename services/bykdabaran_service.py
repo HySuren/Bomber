@@ -2,19 +2,17 @@ import requests
 from config import Proxy, Services
 import json
 
-def send_sms_to_obi(phone_number: str):
+def send_sms_to_bykdabaran(phone_number: str):
     try:
-        url = Services.OBI
+        url = Services.BYKDABARAN
         headers = {
             "Content-Type": "application/json",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
         }
 
-        data = {
-            "query": "mutation($phone_1:String!){startLogin(phone:$phone_1){exists,error{type}}}",
-            "variables": {
-                "phone_1": phone_number[1::1]
-            }
+        payload = {
+            "phone": phone_number[1::1],
+            "g-recaptcha-version": 3
         }
 
         proxies = {
@@ -22,7 +20,7 @@ def send_sms_to_obi(phone_number: str):
             "https": Proxy.PROXY_URL
         }
 
-        response = requests.post(url, headers=headers, json=data, proxies=proxies)
+        response = requests.post(url, headers=headers, json=payload, proxies=proxies)
 
         response.raise_for_status()
 

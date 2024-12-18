@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-services = ["1", "2", "3", "4", "5", "6", "7"]
+services = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 service_names = {
     "1": "Dommalera",
@@ -13,7 +13,9 @@ service_names = {
     "4": "BANKI_RU",
     "5": "KALINA_MALINA",
     "6": "TTraditions",
-    "7": "AYURVEDA"
+    "7": "AYURVEDA",
+    "8": "BYKDABARAN",
+    "9": "OBI"
 }
 
 class PhoneAgregator:
@@ -31,6 +33,7 @@ class Services:
     BANKI_RU = os.getenv("BANKI_RU")
     GAZPROMBONUS = os.getenv("GAZPROMBONUS")
     KALINA_MALINA = os.getenv("KALINA_MALINA")
+    BYKDABARAN = os.getenv("BYKDABARAN")
 
 class Proxy:
     PROXY_URL = os.getenv("PROXY")
