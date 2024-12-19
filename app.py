@@ -1,11 +1,12 @@
 import logging
+import psycopg2
 import threading
 import sqlite3
 import time
 import requests
 import gspread
 from datetime import datetime, timedelta
-from config import PhoneAgregator, services, service_names
+from config import PhoneAgregator, Databases, services, service_names
 from fastapi import FastAPI, HTTPException
 from fastapi_utils.tasks import repeat_every
 from utils.validators import validate_and_format_number
@@ -33,18 +34,28 @@ DELIVERY_CHECK_INTERVAL = 6  # seconds
 
 
 # --- Database Initialization ---
+import psycopg2
+
+DB_CONFIG = {
+    "dbname": Databases.DBNAME,
+    "user": Databases.DBUSER,
+    "password": Databases.DBPASSWORD,
+    "host": Databases.DBHOST,
+    "port": Databases.DBPORT
+}
+
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
+    conn = psycopg2.connect(**DB_CONFIG)
     cursor = conn.cursor()
-    print('addadad')
+
     # Таблица для статистики
     cursor.execute(
         """CREATE TABLE IF NOT EXISTS sms_stats (
-            id INTEGER PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             service_name TEXT,
             delivered INTEGER,
             not_delivered INTEGER,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )"""
     )
 
@@ -52,28 +63,30 @@ def init_db():
     cursor.execute(
         """CREATE TABLE IF NOT EXISTS config (
             service_name TEXT PRIMARY KEY,
-            enabled BOOLEAN NOT NULL CHECK (enabled IN (0, 1))
+            enabled BOOLEAN NOT NULL CHECK (enabled IN (true, false))
+        )"""
+    )
+
+    # Таблица для заблокированных сервисов
+    cursor.execute(
+        """CREATE TABLE IF NOT EXISTS banned (
+            service_name TEXT,
+            banned_date TIMESTAMP,
+            comment TEXT DEFAULT 'Менее 20% дошедших за последние 100 попыток'
         )"""
     )
 
     # Инициализация таблицы config
     for service_id, service_name in service_names.items():
         cursor.execute(
-            "INSERT OR IGNORE INTO config (service_name, enabled) VALUES (?, ?)",
-            (service_name, 1)
+            "INSERT INTO config (service_name, enabled) VALUES (%s, %s) ON CONFLICT (service_name) DO NOTHING",
+            (service_name, True)
         )
 
-    # Таблица для заблокированных сервисов
-    cursor.execute(
-        """CREATE TABLE IF NOT EXISTS banned (
-            service_name TEXT,
-            banned_date DATETIME,
-            comment TEXT DEFAULT "Менее 20% дошедших за последние 100 попыток"
-        )"""
-    )
-
     conn.commit()
+    cursor.close()
     conn.close()
+
 
 
 init_db()
@@ -82,15 +95,17 @@ init_db()
 # --- Utility Functions ---
 def is_service_enabled(service_name):
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = psycopg2.connect(**DB_CONFIG)
         cursor = conn.cursor()
-        cursor.execute("SELECT enabled FROM config WHERE service_name = ?", (service_name,))
+        cursor.execute("SELECT enabled FROM config WHERE service_name = %s", (service_name,))
         result = cursor.fetchone()
+        cursor.close()
         conn.close()
-        return result and result[0] == 1
+        return result and result[0]
     except Exception as e:
         logger.error(f"Error checking service status: {e}")
         return False
+
 
 
 def check_and_ban_services():
@@ -281,24 +296,20 @@ class SmsServiceThread(threading.Thread):
             return False
 
     def update_stats(self, delivered):
-        """Обновление статистики в базе данных сразу после получения ответа о доставке."""
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = psycopg2.connect(**DB_CONFIG)
             cursor = conn.cursor()
             service_name = service_names.get(self.service_id, "Unknown Service")
             delivered_status = 1 if delivered else 0
             not_delivered_status = 0 if delivered else 1
 
-            # Записываем статистику немедленно после каждого сообщения
-            print(service_name)
-            print(delivered_status)
-            print(not_delivered_status)
             cursor.execute(
-                "INSERT INTO sms_stats (service_name, delivered, not_delivered, timestamp) VALUES (?, ?, ?, ?)",
-                (service_name, delivered_status, not_delivered_status, datetime.now()),
+                "INSERT INTO public.sms_stats (service_name, delivered, not_delivered, timestamp) VALUES (%s, %s, %s, CURRENT_TIMESTAMP)",
+                (service_name, delivered_status, not_delivered_status)
             )
 
             conn.commit()
+            cursor.close()
             conn.close()
         except Exception as e:
             logger.error(f"Error updating stats in database: {e}")

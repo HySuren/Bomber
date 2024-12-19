@@ -18,6 +18,15 @@ service_names = {
     "9": "OBI"
 }
 
+
+class Databases:
+    DBNAME = os.getenv("DBNAME")
+    DBUSER = os.getenv("DBUSER")
+    DBPASSWORD = os.getenv("DBPASSWORD")
+    DBHOST = os.getenv("DBHOST")
+    DBPORT = os.getenv("DBPORT")
+
+
 class PhoneAgregator:
     API_TOKEN = os.getenv("API_TOKEN")
     GET_PHONE_NUMBER_URL = os.getenv("GET_PHONE_NUMBER_URL")
