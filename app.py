@@ -23,6 +23,7 @@ from services.banki_ru_service import send_sms_to_thai_banki_ru
 from services.gazprom_bonus_service import send_sms_to_gazprombonus
 from services.kalina_malina_service import send_sms_to_kalina_malina
 from services.bykdabaran_service import send_sms_to_bykdabaran
+from services.akbars_service import send_sms_to_akbars
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -257,6 +258,8 @@ class SmsServiceThread(threading.Thread):
                 result = send_sms_to_bykdabaran(formatted_number)
             elif self.service_id == "9":
                 result = send_sms_to_obi(formatted_number)
+            elif self.service_id == "10":
+                result = send_sms_to_akbars(formatted_number)
             else:
                 logger.error(f"Service ID {self.service_id} is not supported.")
                 return False
@@ -356,7 +359,7 @@ def startup():
 
     # Определяем настройки для сервисов с ограничением по частоте
     high_priority_services = [("1", 4), ("2", 5), ("3", 4), ("4", 4), ("5", 4), ("6", 4), ("8", 4)]
-    low_priority_services = [("7", 4), ("9", 2)]
+    low_priority_services = [("7", 4), ("9", 2), ("10", 4)]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:
         thread = SmsServiceThread(service_id, rate_limit, DB_PATH)

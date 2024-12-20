@@ -15,7 +15,8 @@ service_names = {
     "6": "TTraditions",
     "7": "AYURVEDA",
     "8": "BYKDABARAN",
-    "9": "OBI"
+    "9": "OBI",
+    "10": "AKBARS"
 }
 
 
@@ -43,6 +44,7 @@ class Services:
     GAZPROMBONUS = os.getenv("GAZPROMBONUS")
     KALINA_MALINA = os.getenv("KALINA_MALINA")
     BYKDABARAN = os.getenv("BYKDABARAN")
+    AKBARS = os.getenv('AKBARS')
 
 class Proxy:
     PROXY_URL = os.getenv("PROXY")
