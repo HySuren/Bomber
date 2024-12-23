@@ -3,7 +3,7 @@ from config import Proxy, Services
 
 def send_sms_to_akbars(phone_number: str):
     try:
-        url = Services.BANKI_RU
+        url = Services.AKBARS
 
         payload = {
         "phone": phone_number[2::1]
@@ -40,9 +40,10 @@ def send_sms_to_akbars(phone_number: str):
             "http": Proxy.PROXY_URL,
             "https": Proxy.PROXY_URL
         }
+        session = requests.session()
 
-        response = requests.post(url, json=payload, proxies=proxies, headers=headers)
-        with open('banki_ru.log', "w") as file:
+        response = session.post(url, json=payload, proxies=proxies, headers=headers)
+        with open('logs\\akbars.log', "w") as file:
             file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         return {"status_code": response.status_code, "response": response}
     except Exception as e:

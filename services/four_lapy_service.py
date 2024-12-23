@@ -2,6 +2,7 @@ import requests
 from config import Proxy, Services
 import json
 
+
 def send_sms_to_4lapy(phone_number: str):
     try:
         url = Services.FOUR_LAPY
@@ -20,7 +21,7 @@ def send_sms_to_4lapy(phone_number: str):
         }
 
         response = requests.post(url, headers=headers, data=data, proxies=proxies)
-        with open('four_lapy.log', "w") as file:
+        with open('logs\\four_lapy.log', "w") as file:
             file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         response.raise_for_status()
 

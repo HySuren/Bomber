@@ -2,6 +2,7 @@ import requests
 from config import Proxy, Services
 import json
 
+
 def send_sms_to_bykdabaran(phone_number: str):
     try:
         url = Services.BYKDABARAN
@@ -15,9 +16,8 @@ def send_sms_to_bykdabaran(phone_number: str):
             "g-recaptcha-version": 3
         }
 
-
         response = requests.post(url, headers=headers, json=payload)
-        with open('bykdabaran.log', "w") as file:
+        with open('logs\\bykdabaran.log', "w") as file:
             file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         response.raise_for_status()
 

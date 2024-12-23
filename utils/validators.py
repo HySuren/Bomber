@@ -40,6 +40,26 @@ def validate_and_format_number(phone_number: str, service_name: str = None) -> s
             pass
         elif service_name == "AKBARS":
             pass
+        elif service_name == "WINELAB":
+            pass
+        elif service_name == "LETAI":
+            phone_number = phone_number[2::1]
+        elif service_name == "SVOI":
+            pass
+        elif service_name == "RAIFFEISEN":
+            phone_number = phone_number[1::1]
+        elif service_name == "SUPERAPTEKA":
+            phone_number = phone_number[1::1]
+        elif service_name == "NFAPTEKA":
+            phone_number = f"+7 ({phone_number[2:5]}) {phone_number[5:8]}-{phone_number[8:10]}-{phone_number[10:]}"
+        elif service_name == "SPACESUHI":
+            pass
+        elif service_name == "CHINA":
+            phone_number = f"+7 {phone_number[2:5]} {phone_number[5:8]}-{phone_number[8:10]}-{phone_number[10:]}"
+        elif service_name == "VIPAVENUE":
+            pass
+        elif service_name == "POIZONSHOP":
+            pass
         return phone_number
     except Exception as e:
         print(f"Ошибка валидации: {e}")

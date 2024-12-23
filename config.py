@@ -3,20 +3,26 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
-services = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "`10"]
+services = ["7", "8", "9", "10", "11", "12", "13", "14", "16", "17", "18", "19", "20", "21", "22", "23", "24"]
 
 service_names = {
-    "1": "Dommalera",
-    "2": "4LAPY",
-    "3": "BEAUTERY",
-    "4": "BANKI_RU",
-    "5": "KALINA_MALINA",
-    "6": "TTraditions",
-    "7": "AYURVEDA",
-    "8": "BYKDABARAN",
+    "7": "BANKI_RU",
+    "8": "4LAPY",
     "9": "OBI",
-    "10": "AKBARS"
+    "10": "AKBARS",
+    "11": "APTECH",
+    "12": "WINELAB",
+    "13": "LETAI",
+    "14": "SVOI",
+    "16": "AYURVEDA",
+    "17": "RAIFFEISEN",
+    "18": "SUPERAPTEKA",
+    "19": "NFAPTEKA",
+    "20": "SPACESUHI",
+    "21": "CHINA",
+    "22": "TTraditions",
+    "23": "VIPAVENUE",
+    "24": "POIZONSHOP"
 }
 
 
@@ -33,6 +39,7 @@ class PhoneAgregator:
     GET_PHONE_NUMBER_URL = os.getenv("GET_PHONE_NUMBER_URL")
     CHECK_SMS_URL = os.getenv("CHECK_SMS_URL")
 
+
 class Services:
     AYURVEDA_URL = os.getenv("AYURVEDA")
     TTRADITIONS_URL = os.getenv("TTRADITIONS")
@@ -45,6 +52,18 @@ class Services:
     KALINA_MALINA = os.getenv("KALINA_MALINA")
     BYKDABARAN = os.getenv("BYKDABARAN")
     AKBARS = os.getenv('AKBARS')
+    APTECH = os.getenv('APTECH')
+    WINELAB = os.getenv('WINELAB')
+    LETAI = os.getenv('LETAI')
+    SVOI = os.getenv('SVOI')
+    RAIFFEISEN = os.getenv('RAIFFEISEN')
+    SUPERAPTEKA = os.getenv('SUPERAPTEKA')
+    NFAPTEKA = os.getenv('NFAPTEKA')
+    SPACESUHI = os.getenv('SPACESUHI')
+    CHINA = os.getenv('CHINA')
+    POIZONSHOP = os.getenv('POIZONSHOP')
+    VIPAVENUE = os.getenv('VIPAVENUE')
+
 
 class Proxy:
     PROXY_URL = os.getenv("PROXY")
