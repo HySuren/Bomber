@@ -1,7 +1,14 @@
 import requests
 from config import Proxy, Services
 import json
+import string
+import random
 
+
+def generate_device_id(length=9):
+    """Генерирует случайный device_id заданной длины."""
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choice(characters) for i in range(length))
 
 def send_sms_to_china(phone_number: str):
     try:
@@ -27,19 +34,19 @@ def send_sms_to_china(phone_number: str):
 
         data = {
             "phone": phone_number,
+            "email": f"Dani{generate_device_id()}@mail.ru",
             "ref": None,
             "utm": {
                 "utm_source": "yandex",
                 "utm_medium": "cpl",
                 "utm_campaign": "v_Novye_kreativy_MSK_SPB_161024",
-                "utm_content": "cid:114970355_gid:5502992503_aid:1856942321745560758_st:search_pt:premium_pos:2_src:none_dvc:desktop_reg:Москва_regid:213",
-                "utm_term": "---autotargeting",
-                "utm_referrer": "china"
+                "utm_content": "cid:114970355_gid:5502992503_aid:1856942321745560758_st:search_pt:premium_pos:2_src:none_dvc:desktop_reg:ÐÐ¾ÑÐºÐ²Ð°_regid:213",
+                "utm_term": "---autotargeting"
             },
             "serviceMailing": True,
             "promotionMailing": True,
             "otherParams": {
-                "yclid": "14129684676723605504"
+                "yclid": "14129684676723605503"
             }
         }
 
