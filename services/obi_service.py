@@ -1,13 +1,14 @@
 import requests
 from config import Proxy, Services
 import json
-
+from utils.response_utils import get_cookies_and_headers
 
 def send_sms_to_obi(phone_number: str):
     try:
         url = Services.OBI
         headers = {
             "Content-Type": "application/json",
+            "Cookie": get_cookies_and_headers('https://obi.ru'),
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
         }
 
@@ -24,8 +25,6 @@ def send_sms_to_obi(phone_number: str):
         }
 
         session = requests.session()
-        cooki = session.get('https://obi.ru')
-        session.cookies.update(cooki.cookies)
         response = session.post(url, headers=headers, proxies=proxies, json=data)
         print("OBI: ", response, response.text)
         with open('logs\\obi.log', "w") as file:

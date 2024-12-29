@@ -42,7 +42,7 @@ def send_sms_to_spacesuhi(phone_number: str):
         response = session.post(url,json=data,headers=headers)
 
         print("SPACESUHI: ",response, response.text)
-        with open('logs\\superapteka.log', "w") as file:
+        with open('logs\\superapteka.log', "a") as file:
             file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
         response.raise_for_status()
         try:

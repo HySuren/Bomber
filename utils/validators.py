@@ -29,12 +29,12 @@ def validate_and_format_number(phone_number: str, service_name: str = None) -> s
         elif service_name == "4LAPY":
             pass
         elif service_name == "BEAUTERY":
-            phone_number = f"+7 ({phone_number[2:5]}) {phone_number[5:8]} {phone_number[8:10]}-{phone_number[10:]}"
+            pass
         elif service_name == "BANKI_RU":
             pass
         elif service_name == "GAZPROMBONUS":
             pass
-        elif service_name == "KALINA_MALINA":
+        elif service_name == "KALINA-MALINA":
             pass
         elif service_name == "BYKDABARAN":
             pass
@@ -57,8 +57,18 @@ def validate_and_format_number(phone_number: str, service_name: str = None) -> s
         elif service_name == "CHINA":
             phone_number = f"+7 {phone_number[2:5]} {phone_number[5:8]}-{phone_number[8:10]}-{phone_number[10:]}"
         elif service_name == "VIPAVENUE":
-            pass
+            phone_number = phone_number[1::1]
         elif service_name == "POIZONSHOP":
+            pass
+        elif service_name == "CREDDY":
+            pass
+        elif service_name == "NAHOSA":
+            phone_number = phone_number[2::1]
+        elif service_name == "BRANDSHOP":
+            pass
+        elif service_name == "SPORTPOINT":
+            phone_number = phone_number[2::1]
+        elif service_name == "STREET_BEAT":
             pass
         return phone_number
     except Exception as e:

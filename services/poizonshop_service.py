@@ -43,7 +43,7 @@ def send_sms_to_poizonshop(phone_number: str):
 
         response = session.post(url, json=data, headers=headers, proxies=proxies)
         print("POIZONSHOP: ", {"status_code": response.status_code, "response": response.text})
-        with open("logs\\poizonshop.log", "w") as file:
+        with open("logs\\poizonshop.log", "a") as file:
             file.write(f"poizonshop responce status_code: {response}, text: {response.text}")
         return {"status_code": response.status_code, "response": response.text}
     except Exception as e:

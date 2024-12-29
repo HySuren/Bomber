@@ -39,11 +39,9 @@ def send_sms_to_aptech(phone_number: str):
             session = requests.session()
             cooki = session.get('https://aptechestvo.ru/')
             session.cookies.update(cooki.cookies)
-            response = session.post(url, headers=headers, proxies=proxies, data=data2)
+            response = session.post(url, headers=headers, data=data2)
             response.raise_for_status()
             print("APTECH: ", {"status_code": response.status_code, "response": response.text})
-            with open('logs\\aptech.log', 'w') as file:
-                file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
             return {"status_code": response.status_code, "response": response.text}
         except requests.exceptions.RequestException as e:
             print(f"Ошибка при запросе: {e}")

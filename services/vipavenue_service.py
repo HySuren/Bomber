@@ -1,56 +1,61 @@
 import requests
 from config import Proxy, Services
+from utils.anti_captcha import main, create_task, get_task_result
 import random
-
-
-def generate_random_ip():
-    return f"{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}"
-
+import json
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
 
 def send_sms_to_vipavenue(phone_number: str):
+    # Инициализируем драйвер
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+
     try:
-        url = Services.VIPAVENUE
-        headers = {
-            "accept": "application/json, text/plain, */*",
-            "accept-encoding": "gzip, deflate, br, zstd",
-            "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-            "content-type": "application/json",
-            "origin": "https://vipavenue.ru",
-            "priority": "u=1, i",
-            "referer": "https://vipavenue.ru/",
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": "Windows",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-site",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-            "x-trace-frontend-request-side": "browser",
-            "x-trace-path": "/product/1388035-krossovki-kombinirovannye-seand-premiata/"
-        }
+        # Открываем окно в полном экране
+        driver.maximize_window()
 
-        session = requests.Session()
-        response = session.get('https://users.vipavenue.ru/api/auth/send-code')  # Получение cookies
-        cookies = session.cookies.get_dict()
-        cookies_str = "; ".join([f"{key}={value}" for key, value in cookies.items()])
-        random_ip = generate_random_ip()
-        headers['cookie'] = cookies_str
+        # Открываем нужный URL
+        url = 'https://vipavenue.ru/'
+        driver.get(url)
 
-        proxies = {
-            "http": Proxy.PROXY_URL,
-            "https": Proxy.PROXY_URL
-        }
+        # Ждем 1 секунду после загрузки страницы
+        time.sleep(11)
+        # Явное ожидание: ждем, пока кнопка "Войти" станет кликабельной и кликаем по ней
+        wait = WebDriverWait(driver, 5)
 
-        data = {
-            "token": "",
-            "captcha_is_verified": True,
-            "phone_number": phone_number,
-            "ip": random_ip
-        }
 
-        response = session.post(url, json=data, headers=headers, proxies=proxies)
-        print("VIPAVENUE: ", {"status_code": response.status_code, "response": response.text})
-        with open("logs\\VIPAVENUE.log", "w") as file:
-            file.write(f"RAIFFEISEN responce status_code: {response}, text: {response.text}")
-        return {"status_code": response.status_code, "response": response.text}
+        user_icon = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'header__icons-user')]"))
+        )
+        time.sleep(1)
+        user_icon.click()
+        time.sleep(1.2)
+        input_field = wait.until(
+            EC.visibility_of_element_located((By.XPATH, "//input[@placeholder='+7 ___ _______']"))
+        )
+
+        phone_number = phone_number[1::1]
+        with open('tests.log', 'a') as file:
+            file.write(phone_number)
+        # Вставляем текст в поле ввода
+        input_field.send_keys(phone_number)  # Замените на нужный вам текст
+
+        # Ждем, пока кнопка "Получить код" станет кликабельной и нажимаем на нее
+        time.sleep(2)
+        submit_button = wait.until(
+            EC.element_to_be_clickable(
+
+                (By.XPATH, "//button[contains(@class, 'modal__login-btn') and contains(., 'Получить код в SMS')]"))
+        )
+        submit_button.click()
+        time.sleep(3)
     except Exception as e:
-        print(f'RAIFFEISEN ERROR: {e}')
+        return {"status_code": 400, "response": f"{e}"}
+    finally:
+        driver.quit()
+        return {"status_code": 200, "response": 'good'}

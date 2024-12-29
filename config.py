@@ -3,9 +3,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-services = ["7", "8", "9", "10", "11", "12", "13", "14", "16", "17", "18", "19", "20", "21", "22", "23", "24"]
+services = ["6","7", "8", "9", "10", "11", "12", "13", "14", "16", "17", "18", "19",
+            "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"]
 
 service_names = {
+    "6": "BEAUTERY",
     "7": "BANKI_RU",
     "8": "4LAPY",
     "9": "OBI",
@@ -22,7 +24,14 @@ service_names = {
     "21": "CHINA",
     "22": "TTraditions",
     "23": "VIPAVENUE",
-    "24": "POIZONSHOP"
+    "24": "POIZONSHOP",
+    "25": "YSAM",
+    "26": "CREDDY",
+    "27": "KALINA-MALINA",
+    "28": "NAHOSA",
+    "29": "BRANDSHOP",
+    "30": "SPORTPOINT",
+    "31": "STREET_BEAT"
 }
 
 
@@ -63,6 +72,9 @@ class Services:
     CHINA = os.getenv('CHINA')
     POIZONSHOP = os.getenv('POIZONSHOP')
     VIPAVENUE = os.getenv('VIPAVENUE')
+    YSAM = os.getenv('YSAM')
+    CREDDY = os.getenv('CREDDY')
+    STREET_BEAT = os.getenv('STREET_BEAT')
 
 
 class Proxy:

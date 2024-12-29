@@ -1,20 +1,23 @@
 import requests
 from config import Proxy, Services
-import time
 import json
+from utils.anti_captcha import main, create_task, get_task_result
+from bs4 import BeautifulSoup
+from utils.response_utils import get_cookies_and_headers
 
-def send_sms_to_nfapteka(phone_number: str):
-    print("NFAPTEKA запущена")
-    url = Services.NFAPTEKA
-
+def send_sms_to_yasm(phone_number: str):
+    url = Services.YSAM
+    cookie = get_cookies_and_headers('https://insneaker.ru').get('Cookie')
     headers = {
         "accept": "application/json, text/javascript, */*; q=0.01",
         "accept-encoding": "gzip, deflate, br, zstd",
         "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+        "connection": "keep-alive",
         "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-        "origin": "https://nfapteka.ru",
-        "priority": "u=1, i",
-        "referer": "https://nfapteka.ru/registration/",
+        "host": "insneaker.ru",
+        "Cookie": cookie,
+        "origin": "https://insneaker.ru",
+        "referer": "https://insneaker.ru/client_account/session/new",
         "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": '"Windows"',
@@ -22,15 +25,8 @@ def send_sms_to_nfapteka(phone_number: str):
         "sec-fetch-mode": "cors",
         "sec-fetch-site": "same-origin",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        "x-csrf-token": "",
         "x-requested-with": "XMLHttpRequest"
-    }
-
-    data = {
-        "component": "bxmaker.authuserphone.login",
-        "sessid": "7e7739d52a7461de94728bc36bbab8e9",
-        "method": "callCode",
-        "phone": phone_number,
-        "registration": "Y"
     }
 
     proxies = {
@@ -39,32 +35,29 @@ def send_sms_to_nfapteka(phone_number: str):
     }
 
     session = requests.session()
-    cooki = session.get('https://nfapteka.ru/registration/')
-    session.cookies.update(cooki.cookies)
 
-    response = session.post(url, headers=headers, data=data, proxies=proxies)
-    session.cookies.update(response.cookies)
-    print(response.text)
-    print("Звонок сделан, ждемс 50 сек")
+    # Получаем куки и CSRF-токен
+    cooki = session.get('https://insneaker.ru/', proxies=proxies)
 
-    time.sleep(50)
+    soup = BeautifulSoup(cooki.text, 'html.parser')
+    csrf_input = soup.find('input', {'name': 'authenticity_token'})
+
+    if csrf_input and 'value' in csrf_input.attrs:
+        csrf_token = csrf_input['value']
+        headers['x-csrf-token'] = csrf_token
 
     data = {
-        "component": "bxmaker.authuserphone.login",
-        "sessid": "7e7739d52a7461de94728bc36bbab8e9",
-        "method": "sendCode",
-        "phone": phone_number,
-        "registration": "Y"
+        'login': phone_number,
+        'type': 'phone',
+        'g-recaptcha-response': main(url='https://insneaker.ru/', site_key='6LcZi0EmAAAAAPNov8uGBKSHCvBArp9oO15qAhXa')
     }
 
     max_attempts = 5
     attempt = 0
 
-
-    print("NFAPTEKA: ",response, response.text)
     while attempt < max_attempts:
         try:
-            response = session.post(url, headers=headers, data=data)
+            response = session.post(url, headers=headers, proxies=proxies, data=data)
             print("YSAM: ", response, response.text)
             with open('ysam.log', "w") as file:
                 file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
@@ -78,10 +71,10 @@ def send_sms_to_nfapteka(phone_number: str):
                 return {"status_code": response.status_code, "response": response.text}
 
         except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 443:
+            if response.status_code == 443:  # Обрабатываем ошибку 443
                 print("Proxy error occurred, retrying...")
                 attempt += 1
-                continue
+                continue  # Переходим к следующей попытке
             else:
                 print(f"HTTP error occurred: {http_err}")
                 return {"status_code": response.status_code, "response": str(http_err)}
