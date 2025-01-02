@@ -1,0 +1,64 @@
+Статус код: 200
+Ответ: {
+    "code": 2,
+    "msg": "Извините, нам кажется, что Ваши действия похожи на автоматические.",
+    "details": "",
+    "get": {
+        "device_id": "89d2e60e-2c07-48cc-9d85-eba7c4d2bd73",
+        "device_platform": "desktop",
+        "merchant_keys": "720618dfb469503bfccd297bef310fbc",
+        "transaction_type": "delivery",
+        "json": "True",
+        "lang": "ru",
+        "frontend": "modern",
+        "phone": "+79309233611"
+    },
+    "post": []
+}Статус код: 200
+Ответ: {
+    "code": 10,
+    "msg": "Некорректный ключ ресторана",
+    "details": "",
+    "get": {
+        "device_id": "89d2e60e-2c07-48cc-9d85-eba7c4d2bd763",
+        "device_platform": "desktop",
+        "merchant_keys": "720618dfb469503bfccd297bef3107fbc",
+        "transaction_type": "delivery",
+        "json": "True",
+        "lang": "ru",
+        "frontend": "modern",
+        "phone": "+79309233611"
+    },
+    "post": []
+}Статус код: 200
+Ответ: {
+    "code": 1,
+    "msg": "Sending msg",
+    "details": {
+        "send_to_phone": "+79309233611",
+        "response_sms": {
+            "items": [
+                {
+                    "uuid": "2c5e7174-c79f-11ef-87d5-0242c0a86496",
+                    "status": "created",
+                    "status_time": 1735667193,
+                    "to": "+79309233611"
+                }
+            ],
+            "errors": [],
+            "count": 1,
+            "success": true
+        }
+    },
+    "get": {
+        "device_id": "89d2e60e-2c07-48cc-9d85-eba7c4d2bd7663",
+        "device_platform": "desktop",
+        "merchant_keys": "720618dfb469503bfccd297bef310fbc",
+        "transaction_type": "delivery",
+        "json": "True",
+        "lang": "ru",
+        "frontend": "modern",
+        "phone": "+79309233611"
+    },
+    "post": []
+}

@@ -1,0 +1,31 @@
+Статус код: 400
+Ответ: {"result":null,"errors":[{"code":124,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:38:56Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":124,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:43:55Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":123,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:44:13Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":123,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:44:34Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":123,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:44:48Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":123,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:45:00Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":123,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:50:24Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":123,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:52:08Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":123,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:52:46Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":123,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:53:10Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":123,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:54:06Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":809,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:55:11Z","version":"1.0.0"},"debugInfo":null}
+Статус код: 400
+Ответ: {"result":null,"errors":[{"code":809,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:55:25Z","version":"1.0.0"},"debugInfo":null}
+Статус код: 400
+Ответ: {"result":null,"errors":[{"code":123,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:55:47Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":123,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:56:50Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":123,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:57:10Z","version":"1.0.0"},"debugInfo":null}Статус код: 400
+Ответ: {"result":null,"errors":[{"code":123,"additionalInfo":null,"message":null,"details":null,"errorExtras":null}],"serverInfo":{"utcTime":"2024-12-31T14:58:25Z","version":"1.0.0"},"debugInfo":null}Статус код: 401
+Ответ: {"data":null,"arr_messages":[],"execution_time":{"seconds":0.018,"milliseconds":18}}Статус код: 401
+Ответ: {"data":null,"arr_messages":[],"execution_time":{"seconds":0.02,"milliseconds":20}}Статус код: 401
+Ответ: {"data":null,"arr_messages":[],"execution_time":{"seconds":0.018,"milliseconds":18}}Статус код: 401
+Ответ: {"data":null,"arr_messages":[],"execution_time":{"seconds":0.019,"milliseconds":19}}Статус код: 401
+Ответ: {"data":null,"arr_messages":[],"execution_time":{"seconds":0.018,"milliseconds":18}}Статус код: 401
+Ответ: {"data":null,"arr_messages":[],"execution_time":{"seconds":0.017,"milliseconds":17}}Статус код: 401
+Ответ: {"data":null,"arr_messages":[],"execution_time":{"seconds":0.019,"milliseconds":19}}Статус код: 401
+Ответ: {"data":null,"arr_messages":[],"execution_time":{"seconds":0.02,"milliseconds":20}}Статус код: 200
+Ответ: {"code":200,"seconds_until_next_request":120}Статус код: 200
+Ответ: {"code":515,"seconds_until_next_request":86}Статус код: 200
+Ответ: {"code":200,"seconds_until_next_request":120}

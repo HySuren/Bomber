@@ -7,11 +7,9 @@ def get_cookies_and_headers(url):
     # Настройка опций для headless режима
     chrome_options = Options()
     chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
 
     # Создаем экземпляр веб-драйвера
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(driver_version='131.0.6778.205').install()), options=chrome_options)
 
     try:
         # Открываем указанный URL

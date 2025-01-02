@@ -3,8 +3,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-services = ["6","7", "8", "9", "10", "11", "12", "13", "14", "16", "17", "18", "19",
-            "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"]
+services = ["6","7", "8", "9", "10", "11", "12", "13", "14",
+            "16", "17", "18", "19","20", "21", "22", "23", "24",
+            "25", "26", "27","28", "29", "30", "31", "32", "33",
+            "34", "35", "36", "37", "38"]
 
 service_names = {
     "6": "BEAUTERY",
@@ -31,7 +33,14 @@ service_names = {
     "28": "NAHOSA",
     "29": "BRANDSHOP",
     "30": "SPORTPOINT",
-    "31": "STREET_BEAT"
+    "31": "STREET_BEAT",
+    "32": "HAPPYWEAR",
+    "33": "PRIME",
+    "34": "PLUSE",
+    "35": "RSB_BANK",
+    "36": "DRAGON",
+    "37": "NINJAFOOD",
+    "38": "EDA11"
 }
 
 
@@ -75,7 +84,13 @@ class Services:
     YSAM = os.getenv('YSAM')
     CREDDY = os.getenv('CREDDY')
     STREET_BEAT = os.getenv('STREET_BEAT')
-
+    HAPPYWEAR = os.getenv('HAPPYWEAR')
+    PRIME = os.getenv('PRIME')
+    PLUSE = os.getenv('PLUSE')
+    RSB_BANK = os.getenv('RSB_BANK')
+    DRAGON = os.getenv('DRAGON')
+    NINJAFOOD = os.getenv('NINJAFOOD')
+    EDA11 = os.getenv('EDA11')
 
 class Proxy:
     PROXY_URL = os.getenv("PROXY")

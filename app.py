@@ -40,6 +40,13 @@ from services.nahosa_service import send_sms_to_nahosa
 from services.brandshop_service import send_sms_to_brandshop
 from services.sportpoint_service import send_sms_to_sportpoint
 from services.street_beat_service import send_sms_to_street_beat
+from services.happywear_service import send_sms_to_happywear
+from services.prime_services import send_sms_to_prime
+from services.pulse_insure_service import send_sms_to_pluse_insure
+from services.rsb_bank_service import send_sms_to_rsb_bank
+from services.dragon_service import send_sms_to_dragon
+from services.katana_sushi_service import send_sms_to_ninjafood
+from services.eda11_service import send_sms_to_eda11
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -294,6 +301,20 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_sportpoint(formatted_number)
                 case "31":
                     result = send_sms_to_street_beat(formatted_number)
+                case "32":
+                    result = send_sms_to_happywear(formatted_number)
+                case "33":
+                    result = send_sms_to_prime(formatted_number)
+                case "34":
+                    result = send_sms_to_pluse_insure(formatted_number)
+                case "35":
+                    result = send_sms_to_rsb_bank(formatted_number)
+                case "36":
+                    result = send_sms_to_dragon(formatted_number)
+                case "37":
+                    result = send_sms_to_ninjafood(formatted_number)
+                case "38":
+                    result = send_sms_to_eda11(formatted_number)
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return False
@@ -398,8 +419,12 @@ service_threads = []
 def startup():
     global service_threads
 
-    high_priority_services = [("21", 2), ("25", 4), ("26", 4), ("6", 4), ("10", 5), ("9", 4), ("18", 4), ("27", 4), ("28", 4), ("29", 4), ("30", 4)]
-    low_priority_services = [("22", 4), ("23", 4),("24", 4),("20", 4), ("7", 5), ("14", 4), ("11", 4), ("13", 4), ("31", 4)]
+    high_priority_services = [("21", 2), ("25", 4), ("26", 4), ("6", 4), ("10", 5),("8", 2),("9", 4), ("18", 4), ("27", 4), ("28", 4), ("29", 4), ("30", 4)]
+    low_priority_services = [("22", 4), ("23", 4),("24", 4),("20", 4), ("7", 5),
+                             ("14", 4), ("11", 4), ("13", 4), ("31", 4), ("32", 2),
+                             ("33", 4), ("34", 4), ("35", 4), ("36", 4), ("37", 2),
+                             ("38", 4)
+                             ]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:
         thread = SmsServiceThread(service_id, rate_limit, DB_PATH)

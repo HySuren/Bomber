@@ -46,7 +46,7 @@ def send_sms_to_letai(phone_number: str):
         "device_id": device_id
     }
 
-    response = session.post(url, json=data, headers=headers, proxies=proxies)
+    response = session.post(url, json=data, headers=headers)
     response.raise_for_status()
     print("LETAI: ", response, response.text)
     with open('LETAI.log', "w") as file:
