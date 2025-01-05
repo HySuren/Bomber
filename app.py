@@ -229,6 +229,7 @@ class SmsServiceThread(threading.Thread):
         """Получение номера телефона и activationId."""
         try:
             response = requests.get(f"{PhoneAgregator.GET_PHONE_NUMBER_URL}?token={PhoneAgregator.API_TOKEN}&country={PhoneAgregator.RU_COUNTRY}&carrier={PhoneAgregator.RU_CARRIER}")
+            print(response.url)
             response.raise_for_status()
             data = response.json()
             return str(data.get('number')), data.get('activationId')
