@@ -1,2 +1,2 @@
 Статус код: 200
-Ответ: {"data":{"sendCode":{"status":"SUCCESS","errors":[],"__typename":"ActionResult"}}}
+Ответ: {"data":{"sendCode":{"status":"FAILED","errors":[],"__typename":"ActionResult"}}}
