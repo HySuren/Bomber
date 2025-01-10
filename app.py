@@ -289,7 +289,7 @@ class SmsServiceThread(threading.Thread):
         try:
             formatted_number = validate_and_format_number(phone_number, service_names[self.service_id])
             logger.info(f"Sending SMS via service {self.service_id} to {formatted_number}, activation_id: {activation_id}")
-
+            print('MMMMMMMSDSDS: ',type(self.service_id))
             match self.service_id:
                 case "1":
                     result = send_sms_to_dommalera(formatted_number)
