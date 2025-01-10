@@ -49,3 +49,4 @@ def send_sms_to_rsb_bank(phone_number: str):
         return {"status_code": 200, "response": response.text}
     except Exception as e:
         print(f'Error occurred: {e}')
+        return {"status_code": 400, "response": response.text}

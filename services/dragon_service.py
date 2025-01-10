@@ -25,10 +25,6 @@ def send_sms_to_dragon(phone_number: str):
         session = requests.session()
 
         response = session.post(url, data=payload,headers=headers, proxies=proxies)
-        print(f'DRAGON: {response.status_code}, {response.text}')
-
-        with open('DRAGON.log', "a") as file:
-            file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}\n")
 
         return {"status_code": 200, "response": response.text}
 
