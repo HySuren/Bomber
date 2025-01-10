@@ -377,7 +377,8 @@ class SmsServiceThread(threading.Thread):
             conn.commit()
             cursor.close()
             conn.close()
-            time.sleep(1.5)
+            print('Ожидаю 1,5 мин, перед новой отправкой...')
+            time.sleep(90)
         except Exception as e:
             logger.error(f"Error updating stats in database: {e}")
 
