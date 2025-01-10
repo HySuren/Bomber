@@ -155,7 +155,7 @@ def check_and_ban_services():
                 if total_attempts >= 100:
                     delivery_rate = (delivered or 0) / total_attempts
                     if delivery_rate <= 0.2:
-                        cursor.execute("UPDATE config SET enabled = 0 WHERE service_name = %s", (service_name,))
+                        cursor.execute("UPDATE config SET enabled = FALSE WHERE service_name = %s", (service_name,))
                         cursor.execute(
                             "INSERT INTO banned (service_name, banned_date) VALUES (%s, %s)",
                             (service_name, datetime.now())
@@ -289,7 +289,6 @@ class SmsServiceThread(threading.Thread):
         try:
             formatted_number = validate_and_format_number(phone_number, service_names[self.service_id])
             logger.info(f"Sending SMS via service {self.service_id} to {formatted_number}, activation_id: {activation_id}")
-            print('MMMMMMMSDSDS: ',type(self.service_id))
             match self.service_id:
                 case "1":
                     result = send_sms_to_dommalera(formatted_number)
@@ -367,8 +366,6 @@ class SmsServiceThread(threading.Thread):
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return {'delivered': False, 'response': 'нет такого сервиса'}
 
-            print('FEEFEFEFE: ', result)
-
             if self.service_id == "11":
                 if result.get("response") in ["Error", "Error в черном списке2", "Error ITTIME2"]:
                     logger.info(
@@ -426,7 +423,6 @@ class SmsServiceThread(threading.Thread):
             conn.commit()
             cursor.close()
             conn.close()
-            print('Ожидаю 1,5 мин, перед новой отправкой...')
         except Exception as e:
             logger.error(f"Error updating stats in database: {e}")
 
