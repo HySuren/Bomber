@@ -365,7 +365,7 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_eda11(formatted_number)
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
-                    return {'delivered': False, 'response': {'status_code':result.get('status_code'),'response':result.get('response')}}
+                    return {'delivered': False, 'response': 'нет такого сервиса'}
 
             if self.service_id == "11":
                 if result.get("response") in ["Error", "Error в черном списке2", "Error ITTIME2"]:
