@@ -367,6 +367,8 @@ class SmsServiceThread(threading.Thread):
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return {'delivered': False, 'response': 'нет такого сервиса'}
 
+            print('FEEFEFEFE: ', result)
+
             if self.service_id == "11":
                 if result.get("response") in ["Error", "Error в черном списке2", "Error ITTIME2"]:
                     logger.info(
