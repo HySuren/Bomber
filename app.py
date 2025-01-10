@@ -5,6 +5,7 @@ import sqlite3
 import time
 import requests
 import gspread
+import json
 from datetime import datetime, timedelta
 from config import PhoneAgregator, Databases, services, service_names
 from fastapi import FastAPI, HTTPException
@@ -140,7 +141,7 @@ def check_and_ban_services():
                 FROM (
                     SELECT delivered, not_delivered 
                     FROM sms_stats 
-                    WHERE service_name = ? 
+                    WHERE service_name = %s
                     ORDER BY timestamp DESC 
                     LIMIT 100
                 )""",
@@ -154,9 +155,9 @@ def check_and_ban_services():
                 if total_attempts >= 100:
                     delivery_rate = (delivered or 0) / total_attempts
                     if delivery_rate <= 0.2:
-                        cursor.execute("UPDATE config SET enabled = 0 WHERE service_name = ?", (service_name,))
+                        cursor.execute("UPDATE config SET enabled = 0 WHERE service_name = %s", (service_name,))
                         cursor.execute(
-                            "INSERT INTO banned (service_name, banned_date) VALUES (?, ?)",
+                            "INSERT INTO banned (service_name, banned_date) VALUES (%s, %s)",
                             (service_name, datetime.now())
                         )
                         logger.info(f"Service {service_name} has been banned due to low delivery rate.")
@@ -174,13 +175,13 @@ def reenable_services():
 
         cursor.execute(
             """SELECT service_name FROM banned 
-            WHERE banned_date <= ?""",
+            WHERE banned_date <= %s""",
             (datetime.now() - timedelta(hours=12),)
         )
         services_to_enable = cursor.fetchall()
 
         for service_name, in services_to_enable:
-            cursor.execute("UPDATE config SET enabled = 1 WHERE service_name = ?", (service_name,))
+            cursor.execute("UPDATE config SET enabled = 1 WHERE service_name = %s", (service_name,))
             logger.info(f"Service {service_name} has been re-enabled after 12 hours.")
 
         conn.commit()
@@ -189,15 +190,40 @@ def reenable_services():
         logger.error(f"Error in reenable_services: {e}")
 
 
+def get_sms_per_min(service_name):
+    try:
+        conn = psycopg2.connect(**DB_CONFIG)
+        cursor = conn.cursor()
+        cursor.execute("SELECT sms_per_min FROM config WHERE service_name = %s", (service_name,))
+        result = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if result:
+            return result[0]
+        else:
+            logger.warning(f"No sms_per_min found for service {service_name}. Using default value.")
+            return 5  # Default value if not found
+    except Exception as e:
+        logger.error(f"Error fetching sms_per_min for service {service_name}: {e}")
+        return 5  # Default value in case of error
+
+
+
+
 # --- SMS Sending Logic ---
 class SmsServiceThread(threading.Thread):
-    def __init__(self, service_id, rate_limit, db_path):
+    def __init__(self, service_id, db_path):
         super().__init__()
         self.service_id = str(service_id)
-        self.rate_limit = rate_limit
         self.db_path = db_path
-        self.last_sent_timestamp = 0  # Хранение времени последней отправки
         self.stop_event = threading.Event()
+        self.sms_per_min = self.get_sms_per_min()  # Получаем количество смс в минуту для этого сервиса
+        self.last_sent_timestamp = 0  # Время последней отправки
+
+    def get_sms_per_min(self):
+        """Получаем лимит отправки SMS для текущего сервиса."""
+        service_name = service_names.get(self.service_id, "Unknown Service")
+        return get_sms_per_min(service_name)
 
     def run(self):
         while not self.stop_event.is_set():
@@ -205,7 +231,7 @@ class SmsServiceThread(threading.Thread):
                 now = time.time()
                 time_since_last_sent = now - self.last_sent_timestamp
 
-                if time_since_last_sent >= 60:  # Проверяем, прошло ли 90 секунд
+                if time_since_last_sent >= (60 / self.sms_per_min):  # Проверяем, прошло ли достаточно времени
                     service_name = service_names[self.service_id]
                     if not is_service_enabled(service_name):
                         logger.info(f"Service {service_name} is disabled. Skipping.")
@@ -214,11 +240,12 @@ class SmsServiceThread(threading.Thread):
 
                     phone_number, activation_id = self.fetch_phone_number()
                     if phone_number:
-                        delivered = self.send_sms(phone_number, activation_id)
-                        self.update_stats(delivered)
-                        self.last_sent_timestamp = time.time()  # Обновляем время последней отправки
+                        response_data = self.send_sms(phone_number, activation_id)
+
+                        self.update_stats(delivered=response_data.get('delivered'), response_data=response_data.get('response'))  # Записываем статистику с ответом от сервиса
+                        self.last_sent_timestamp = time.time()
                 else:
-                    time_to_wait = 60 - time_since_last_sent
+                    time_to_wait = (60 / self.sms_per_min) - time_since_last_sent
                     logger.info(f"Waiting for {time_to_wait} seconds before next SMS...")
                     time.sleep(time_to_wait)
             except Exception as e:
@@ -228,13 +255,31 @@ class SmsServiceThread(threading.Thread):
         self.stop_event.set()
 
     def fetch_phone_number(self):
-        """Получение номера телефона и activationId."""
+        """Получение номера телефона и activationId в зависимости от страны."""
         try:
-            response = requests.get(f"{PhoneAgregator.GET_PHONE_NUMBER_URL}?token={PhoneAgregator.API_TOKEN}&country={PhoneAgregator.RU_COUNTRY}&carrier={PhoneAgregator.RU_CARRIER}")
-            print(response.url)
-            response.raise_for_status()
-            data = response.json()
-            return str(data.get('number')), data.get('activationId')
+            # Извлекаем страну из конфигурации
+            service_name = service_names[self.service_id]
+            conn = psycopg2.connect(**DB_CONFIG)
+            cursor = conn.cursor()
+            cursor.execute("SELECT country FROM config WHERE service_name = %s", (service_name,))
+            result = cursor.fetchone()
+            cursor.close()
+            conn.close()
+
+            if result:
+                country = result[0]
+            else:
+                country = 'RU'
+
+            if country == 'RU':
+                response = requests.get(
+                    f"{PhoneAgregator.GET_PHONE_NUMBER_URL}?token={PhoneAgregator.API_TOKEN}&country={PhoneAgregator.RU_COUNTRY}&carrier={PhoneAgregator.RU_CARRIER}")
+                response.raise_for_status()
+                data = response.json()
+                return str(data.get('number')), data.get('activationId')
+            else:
+                logger.info(f"Fetching phone number for country {country} is not supported yet.")
+                return None, None
         except Exception as e:
             logger.error(f"Error fetching phone number for service {self.service_id}: {e}")
             return None, None
@@ -320,27 +365,26 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_eda11(formatted_number)
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
-                    return False
+                    return {'delivered': False, 'response': {'status_code':result.get('status_code'),'response':result.get('response')}}
 
             if self.service_id == "11":
                 if result.get("response") in ["Error", "Error в черном списке2", "Error ITTIME2"]:
                     logger.info(
                         f"SMS failed for service {service_names[str(self.service_id)]} due to error response: {result.get('response')}")
-                    self.update_stats(False)
-                    return False
+                    return {'delivered': False, 'response': {'status_code':result.get('status_code'),'response':result.get('response')}}
 
                 if result.get("response") == "success":
-                    return self.check_delivery_status(activation_id)
+                    return {'delivered': self.check_delivery_status(activation_id), 'response': {'status_code':result.get('status_code'),'response':result.get('response')}}
 
             if result.get("status_code") != 200 and result.get("status_code") != 201 and result.get('status_code') != 202:
                 logger.warning(
                     f"SMS delivery failed during sending phase via service {service_names[str(self.service_id)]}: {result.get('status_code')}")
-                return False
+                return {'delivered': False, 'response': {'status_code':result.get('status_code'),'response':result.get('response')}}
 
-            return self.check_delivery_status(activation_id)
+            return {'delivered': self.check_delivery_status(activation_id), 'response': {'status_code':result.get('status_code'),'response':result.get('response')}}
         except Exception as e:
             logger.error(f"Error sending SMS via service {self.service_id}: {e}")
-            return False
+            return {'delivered': False, 'response': {'status_code':result.get('status_code'),'response':result.get('response')}}
 
     def check_delivery_status(self, activation_id):
         """Проверка доставки SMS по activationId."""
@@ -363,26 +407,26 @@ class SmsServiceThread(threading.Thread):
             logger.error(f"Error checking delivery status for activationId {activation_id}: {e}")
             return False
 
-    def update_stats(self, delivered):
+    def update_stats(self, delivered, response_data):
         try:
             conn = psycopg2.connect(**DB_CONFIG)
             cursor = conn.cursor()
             service_name = service_names.get(self.service_id, "Unknown Service")
             delivered_status = 1 if delivered else 0
             not_delivered_status = 0 if delivered else 1
-
+            print("IIO: ",json.dumps(response_data))
+            # Записываем в таблицу sms_stats с полем response_data
             cursor.execute(
-                "INSERT INTO public.sms_stats (service_name, delivered, not_delivered, timestamp) VALUES (%s, %s, %s, CURRENT_TIMESTAMP)",
-                (service_name, delivered_status, not_delivered_status)
+                """INSERT INTO public.sms_stats (service_name, delivered, not_delivered, response_data, timestamp) 
+                VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)""",
+                (service_name, delivered_status, not_delivered_status, json.dumps(response_data))
             )
-
             conn.commit()
             cursor.close()
             conn.close()
-            logger.info('Ожидаю 1,5 мин, перед новой отправкой...')
+            print('Ожидаю 1,5 мин, перед новой отправкой...')
         except Exception as e:
             logger.error(f"Error updating stats in database: {e}")
-
 
 
 # --- Report Generation ---
@@ -432,7 +476,7 @@ def startup():
                              ]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:
-        thread = SmsServiceThread(service_id, rate_limit, DB_PATH)
+        thread = SmsServiceThread(service_id, DB_PATH)
         thread.start()
         service_threads.append(thread)
 
