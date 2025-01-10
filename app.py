@@ -245,10 +245,99 @@ class SmsServiceThread(threading.Thread):
             formatted_number = validate_and_format_number(phone_number, service_names[self.service_id])
             logger.info(f"Sending SMS via service {self.service_id} to {formatted_number}, activation_id: {activation_id}")
 
-            # (Здесь идет логика отправки сообщения для разных сервисов, как и раньше)
+            match self.service_id:
+                case "1":
+                    result = send_sms_to_dommalera(formatted_number)
+                case "2":
+                    result = send_sms_to_4lapy(formatted_number)
+                case "6":
+                    result = send_sms_to_beautery(formatted_number)
+                case "4":
+                    result = send_sms_to_thai_banki_ru(formatted_number)
+                case "7":
+                    result = send_sms_to_thai_banki_ru(formatted_number)
+                case "8":
+                    result = send_sms_to_4lapy(formatted_number)
+                case "9":
+                    result = send_sms_to_obi(formatted_number)
+                case "10":
+                    result = send_sms_to_akbars(formatted_number)
+                case "11":
+                    result = send_sms_to_aptech(formatted_number)
+                case "12":
+                    result = send_sms_to_winelab(formatted_number)
+                case "13":
+                    result = send_sms_to_letai(formatted_number)
+                case "14":
+                    result = send_sms_to_svoi(formatted_number)
+                case "15":
+                    result = send_sms_to_gazprombonus(formatted_number)
+                case "16":
+                    result = send_sms_to_ayurveda(formatted_number)
+                case "17":
+                    result = send_sms_to_raiffeisen(formatted_number)
+                case "18":
+                    result = send_sms_to_superapteka(formatted_number)
+                case "19":
+                    result = send_sms_to_nfapteka(formatted_number)
+                case "20":
+                    result = send_sms_to_spacesuhi(formatted_number)
+                case "21":
+                    result = send_sms_to_china(formatted_number)
+                case "22":
+                    result = send_sms_to_thai_traditions(formatted_number)
+                case "23":
+                    result = send_sms_to_vipavenue(formatted_number)
+                case "24":
+                    result = send_sms_to_poizonshop(formatted_number)
+                case "25":
+                    result = send_sms_to_yasm(formatted_number)
+                case "26":
+                    result = send_sms_to_creddy(formatted_number)
+                case "27":
+                    result = send_sms_to_kalina_malina(formatted_number)
+                case "28":
+                    result = send_sms_to_nahosa(formatted_number)
+                case "29":
+                    result = send_sms_to_brandshop(formatted_number)
+                case "30":
+                    result = send_sms_to_sportpoint(formatted_number)
+                case "31":
+                    result = send_sms_to_street_beat(formatted_number)
+                case "32":
+                    result = send_sms_to_happywear(formatted_number)
+                case "33":
+                    result = send_sms_to_prime(formatted_number)
+                case "34":
+                    result = send_sms_to_pluse_insure(formatted_number)
+                case "35":
+                    result = send_sms_to_rsb_bank(formatted_number)
+                case "36":
+                    result = send_sms_to_dragon(formatted_number)
+                case "37":
+                    result = send_sms_to_ninjafood(formatted_number)
+                case "38":
+                    result = send_sms_to_eda11(formatted_number)
+                case _:
+                    logger.error(f"Service ID {self.service_id} is not supported.")
+                    return False
+
+            if self.service_id == "11":
+                if result.get("response") in ["Error", "Error в черном списке2", "Error ITTIME2"]:
+                    logger.info(
+                        f"SMS failed for service {service_names[str(self.service_id)]} due to error response: {result.get('response')}")
+                    self.update_stats(False)
+                    return False
+
+                if result.get("response") == "success":
+                    return self.check_delivery_status(activation_id)
+
+            if result.get("status_code") != 200 and result.get("status_code") != 201 and result.get('status_code') != 202:
+                logger.warning(
+                    f"SMS delivery failed during sending phase via service {service_names[str(self.service_id)]}: {result.get('status_code')}")
+                return False
 
             return self.check_delivery_status(activation_id)
-
         except Exception as e:
             logger.error(f"Error sending SMS via service {self.service_id}: {e}")
             return False
