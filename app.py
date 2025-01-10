@@ -131,7 +131,7 @@ def is_service_enabled(service_name):
 
 def check_and_ban_services():
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = psycopg2.connect(**DB_CONFIG)
         cursor = conn.cursor()
 
         for service_name in service_names.values():
@@ -169,7 +169,7 @@ def check_and_ban_services():
 
 def reenable_services():
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = psycopg2.connect(**DB_CONFIG)
         cursor = conn.cursor()
 
         cursor.execute(
@@ -377,6 +377,7 @@ class SmsServiceThread(threading.Thread):
             conn.commit()
             cursor.close()
             conn.close()
+            time.sleep(1.5)
         except Exception as e:
             logger.error(f"Error updating stats in database: {e}")
 
@@ -421,9 +422,9 @@ def startup():
     global service_threads
 
     high_priority_services = [("21", 2), ("25", 4), ("26", 4), ("6", 4), ("10", 5),("17", 4),("8", 4),("9", 4), ("18", 4), ("27", 4), ("28", 4), ("29", 4), ("30", 4)]
-    low_priority_services = [("22", 4), ("23", 2),("24", 2),("20", 4), ("7", 5),
-                             ("14", 4), ("11", 2), ("13", 4), ("31", 4), ("32", 2),
-                             ("33", 4), ("34", 2), ("35", 2), ("36", 4), ("37", 2),
+    low_priority_services = [("22", 4), ("23", 4),("24", 4),("20", 4), ("7", 5),
+                             ("14", 4), ("11", 4), ("13", 4), ("31", 4), ("32", 2),
+                             ("33", 4), ("34", 4), ("35", 4), ("36", 4), ("37", 2),
                              ("38", 4)
                              ]
 
