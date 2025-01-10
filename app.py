@@ -205,7 +205,7 @@ class SmsServiceThread(threading.Thread):
                 now = time.time()
                 time_since_last_sent = now - self.last_sent_timestamp
 
-                if time_since_last_sent >= 90:  # Проверяем, прошло ли 90 секунд
+                if time_since_last_sent >= 60:  # Проверяем, прошло ли 90 секунд
                     service_name = service_names[self.service_id]
                     if not is_service_enabled(service_name):
                         logger.info(f"Service {service_name} is disabled. Skipping.")
@@ -218,7 +218,7 @@ class SmsServiceThread(threading.Thread):
                         self.update_stats(delivered)
                         self.last_sent_timestamp = time.time()  # Обновляем время последней отправки
                 else:
-                    time_to_wait = 90 - time_since_last_sent
+                    time_to_wait = 60 - time_since_last_sent
                     logger.info(f"Waiting for {time_to_wait} seconds before next SMS...")
                     time.sleep(time_to_wait)
             except Exception as e:
