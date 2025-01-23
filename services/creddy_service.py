@@ -1,17 +1,14 @@
 import requests
 from config import Proxy, Services
-from utils.response_utils import get_cookies_and_headers
 
 def send_sms_to_creddy(phone_number: str):
 
-    url = Services.STREET_BEAT
-    cookie = get_cookies_and_headers('https://creddy.ru/').get('Cookie')
+    url = Services.CREDDY
     headers = {
         "accept": "application/json, text/plain, */*",
         "accept-encoding": "gzip, deflate, br, zstd",
         "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
         "content-type": "application/json",
-        "Cookie": cookie,
         "origin": "https://client.creddy.ru",
         "priority": "u=1, i",
         "referer": "https://client.creddy.ru/",

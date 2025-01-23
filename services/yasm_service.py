@@ -3,11 +3,9 @@ from config import Proxy, Services
 import json
 from utils.anti_captcha import main, create_task, get_task_result
 from bs4 import BeautifulSoup
-from utils.response_utils import get_cookies_and_headers
 
 def send_sms_to_yasm(phone_number: str):
     url = Services.YSAM
-    cookie = get_cookies_and_headers('https://insneaker.ru').get('Cookie')
     headers = {
         "accept": "application/json, text/javascript, */*; q=0.01",
         "accept-encoding": "gzip, deflate, br, zstd",
@@ -15,7 +13,7 @@ def send_sms_to_yasm(phone_number: str):
         "connection": "keep-alive",
         "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
         "host": "insneaker.ru",
-        "Cookie": cookie,
+        "Cookie": 'ins_myshop-cas393=a37rkt-aa8173341d7bdb69e5e907400378a70a; first_current_location=%2F; first_referer=; referer=; current_location=%2F; ins_order_version=1737637942.31506; visit=t; pnn_status_check=good; _ym_uid=1737637842505426854; _ym_d=1737637842; _ym_isad=1; SL_G_WPT_TO=ru; _ym_visorc=w; SL_GWPT_Show_Hide_tmp=1; SL_wptGlobTipTmp=1; cart=%7B%22comment%22%3Anull%2C%22payment_title%22%3Anull%2C%22payment_description%22%3Anull%2C%22delivery_description%22%3Anull%2C%22delivery_price%22%3A0.0%2C%22number%22%3Anull%2C%22delivery_date%22%3Anull%2C%22delivery_from_hour%22%3Anull%2C%22delivery_to_hour%22%3Anull%2C%22delivery_title%22%3Anull%2C%22delivery_from_minutes%22%3Anull%2C%22delivery_to_minutes%22%3Anull%2C%22items_count%22%3A0%2C%22items_price%22%3A0.0%2C%22order_lines%22%3A%5B%5D%2C%22discounts%22%3A%5B%5D%2C%22total_price%22%3A0.0%7D; x_csrf_token=wcrfvuooJI55qV2SzE918C9QZ_iEki0sJLu96kgA7tij5_-jgirIHy2R5fK_-PM7GneZXts-nfqQDMtw_RhBFQ',
         "origin": "https://insneaker.ru",
         "referer": "https://insneaker.ru/client_account/session/new",
         "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
