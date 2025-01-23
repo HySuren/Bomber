@@ -9,7 +9,7 @@ def get_cookies_and_headers(url, mode='default'):
     chrome_options.add_argument("--headless")
 
     # Создаем экземпляр веб-драйвера
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(driver_version='131.0.6778.205').install()), options=chrome_options)
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
 
     try:
         # Открываем указанный URL

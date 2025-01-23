@@ -1,2 +1,0 @@
-Статус код: 200
-Ответ: {"data":{"sendCode":{"status":"FAILED","errors":[{"code":"error.user_is_blocked","subject":"login.user","systemMessage":"error.user_is_blocked","userMessage":"error.user_is_blocked","params":[],"__typename":"ValidationError"}],"__typename":"ActionResult"}}}
