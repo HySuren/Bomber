@@ -6,6 +6,20 @@ from bs4 import BeautifulSoup
 
 def send_sms_to_yasm(phone_number: str):
     url = Services.YSAM
+
+    proxies = {
+        "http": Proxy.PROXY_URL,
+        "https": Proxy.PROXY_URL
+    }
+
+    session = requests.session()
+
+    # Получаем куки и CSRF-токен
+    cooki = session.get('https://insneaker.ru/', proxies=proxies)
+
+    soup = BeautifulSoup(cooki.text, 'html.parser')
+    csrf_input = soup.find('input', {'name': 'authenticity_token'})
+
     headers = {
         "accept": "application/json, text/javascript, */*; q=0.01",
         "accept-encoding": "gzip, deflate, br, zstd",
@@ -27,27 +41,16 @@ def send_sms_to_yasm(phone_number: str):
         "x-requested-with": "XMLHttpRequest"
     }
 
-    proxies = {
-        "http": Proxy.PROXY_URL,
-        "https": Proxy.PROXY_URL
-    }
-
-    session = requests.session()
-
-    # Получаем куки и CSRF-токен
-    cooki = session.get('https://insneaker.ru/', proxies=proxies)
-
-    soup = BeautifulSoup(cooki.text, 'html.parser')
-    csrf_input = soup.find('input', {'name': 'authenticity_token'})
-
     if csrf_input and 'value' in csrf_input.attrs:
         csrf_token = csrf_input['value']
         headers['x-csrf-token'] = csrf_token
+        headers['Cookie'] = f'ins_myshop-cas393=a37rkt-aa8173341d7bdb69e5e907400378a70a; first_current_location=%2F; first_referer=; referer=; current_location=%2F; ins_order_version=1737637942.31506; visit=t; pnn_status_check=good; _ym_uid=1737637842505426854; _ym_d=1737637842; _ym_isad=1; SL_G_WPT_TO=ru; _ym_visorc=w; SL_GWPT_Show_Hide_tmp=1; SL_wptGlobTipTmp=1; cart=%7B%22comment%22%3Anull%2C%22payment_title%22%3Anull%2C%22payment_description%22%3Anull%2C%22delivery_description%22%3Anull%2C%22delivery_price%22%3A0.0%2C%22number%22%3Anull%2C%22delivery_date%22%3Anull%2C%22delivery_from_hour%22%3Anull%2C%22delivery_to_hour%22%3Anull%2C%22delivery_title%22%3Anull%2C%22delivery_from_minutes%22%3Anull%2C%22delivery_to_minutes%22%3Anull%2C%22items_count%22%3A0%2C%22items_price%22%3A0.0%2C%22order_lines%22%3A%5B%5D%2C%22discounts%22%3A%5B%5D%2C%22total_price%22%3A0.0%7D; x_csrf_token={csrf_token}',
 
     data = {
         'login': phone_number,
         'type': 'phone',
-        'g-recaptcha-response': main(url='https://insneaker.ru/', site_key='6LcZi0EmAAAAAPNov8uGBKSHCvBArp9oO15qAhXa')
+        'g-recaptcha-response': main(url='https://insneaker.ru/', site_key='6LcZi0EmAAAAAPNov8uGBKSHCvBArp9oO15qAhXa'),
+        'recaptcha_type': 'invisible'
     }
 
     max_attempts = 5
