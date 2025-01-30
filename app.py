@@ -182,11 +182,11 @@ def reenable_services():
         services_to_enable = cursor.fetchall()
 
         for service_name, in services_to_enable:
-            cursor.execute("UPDATE config SET enabled = 1 WHERE service_name = %s", (service_name,))
+            cursor.execute("UPDATE config SET enabled = TRUE WHERE service_name = %s", (service_name,))
             logger.info(f"Service {service_name} has been re-enabled after 12 hours.")
 
-        conn.commit()
-        conn.close()
+        #conn.commit()
+        #conn.close()
     except Exception as e:
         logger.error(f"Error in reenable_services: {e}")
 
@@ -473,7 +473,7 @@ def startup():
     low_priority_services = [("22", 4), ("23", 4),("24", 4),("20", 4), ("7", 5),
                              ("14", 4), ("11", 4), ("13", 4), ("31", 4), ("32", 2),
                              ("33", 4), ("34", 4), ("35", 4), ("36", 4), ("37", 2),
-                             ("38", 4)
+                             ("38", 4), ("40", 4)
                              ]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:

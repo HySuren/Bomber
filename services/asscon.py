@@ -1,13 +1,11 @@
 import requests
 from utils.response_utils import get_cookies_and_headers
-from utils.anti_captcha import main, create_task, get_task_result
 from config import Services
 
 def send_sms_to_chibbis(phone_number: str):
     url = Services.CHIBBIS
 
     session = requests.Session()
-    cookie = get_cookies_and_headers(url='https://chibbis.ru/tula')
     captcha = main(url='https://chibbis.ru/', captcha_type='RecaptchaV2TaskProxyless', site_key='6Lc92QoUAAAAANkFHHIwmosiM1E3k9JI88fyxVDf')
 
     data = {
@@ -20,7 +18,6 @@ def send_sms_to_chibbis(phone_number: str):
         "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
         "content-type": "application/json",
         "origin": "https://chibbis.ru",
-        "cookie": cookie,
         "grecaptchatoken": captcha,
         "priority": "u=1, i",
         "referer": "https://chibbis.ru/tula",
@@ -36,4 +33,3 @@ def send_sms_to_chibbis(phone_number: str):
 
     response = session.post('https://chibbis.ru/webapi/auth/verification-code', json=data, headers=headers)
     return {"status_code": response.status_code, "response": response.text}
-
