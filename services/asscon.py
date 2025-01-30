@@ -32,4 +32,4 @@ def send_sms_to_chibbis(phone_number: str):
 
 
     response = session.post('https://chibbis.ru/webapi/auth/verification-code', json=data, headers=headers)
-    return {"status_code": response.status_code, "response": response.text}
+    return {"status_code": response.status_code, "response": 'good'}
