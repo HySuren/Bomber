@@ -1,11 +1,12 @@
 import requests
-from utils.response_utils import get_cookies_and_headers
+from utils.anti_captcha import main, create_task, get_task_result
 from config import Services
 
 def send_sms_to_chibbis(phone_number: str):
     url = Services.CHIBBIS
 
     session = requests.Session()
+    captcha = main(url='https://chibbis.ru/', captcha_type='RecaptchaV2TaskProxyless', site_key='6Lc92QoUAAAAANkFHHIwmosiM1E3k9JI88fyxVDf')
 
     data = {
         "phone": phone_number[1::1]
