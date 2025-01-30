@@ -6,7 +6,6 @@ def send_sms_to_chibbis(phone_number: str):
     url = Services.CHIBBIS
 
     session = requests.Session()
-    captcha = main(url='https://chibbis.ru/', captcha_type='RecaptchaV2TaskProxyless', site_key='6Lc92QoUAAAAANkFHHIwmosiM1E3k9JI88fyxVDf')
 
     data = {
         "phone": phone_number[1::1]
