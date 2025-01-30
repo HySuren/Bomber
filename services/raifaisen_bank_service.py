@@ -59,6 +59,3 @@ def send_sms_to_raiffeisen(phone_number: str):
     response.raise_for_status()
 
     return {"status_code": response.status_code, "response": response.text}
-
-
-send_sms_to_raiffeisen('79390094179')

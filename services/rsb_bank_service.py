@@ -50,5 +50,3 @@ def send_sms_to_rsb_bank(phone_number: str):
     except Exception as e:
         print(f'Error occurred: {e}')
         return {"status_code": 400, "response": 'Не понятно'}
-
-send_sms_to_rsb_bank('+79320003198')

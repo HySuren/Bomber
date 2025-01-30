@@ -34,6 +34,3 @@ def send_sms_to_superapteka(phone_number: str):
 
 
     return {"status_code": response.status_code, "response": response.text}
-
-
-send_sms_to_superapteka('79309233611')

@@ -57,5 +57,3 @@ def send_sms_to_sparc_food(phone_number: str):
 
     except Exception as e:
         print(f'Error occurred: {e}')
-
-send_sms_to_sparc_food('9')

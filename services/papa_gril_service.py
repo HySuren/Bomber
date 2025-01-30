@@ -43,5 +43,3 @@ def send_sms_to_prime(phone_number: str):
         return {"status_code": response.status_code, "response": response}
     except Exception as e:
         print(e)
-
-send_sms_to_prime('fefefe')
