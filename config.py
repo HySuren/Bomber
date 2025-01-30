@@ -6,7 +6,7 @@ load_dotenv()
 services = ["6","7", "8", "9", "10", "11", "12", "13", "14",
             "16", "17", "18", "19","20", "21", "22", "23", "24",
             "25", "26", "27","28", "29", "30", "31", "32", "33",
-            "34", "35", "36", "37", "38"]
+            "34", "35", "36", "37", "38", "39", "40"]
 
 service_names = {
     "6": "BEAUTERY",
@@ -40,7 +40,9 @@ service_names = {
     "35": "RSB_BANK",
     "36": "DRAGON",
     "37": "NINJAFOOD",
-    "38": "EDA11"
+    "38": "EDA11",
+    "39": "SPARC_FOOD",
+    "40": "CHIBBIS"
 }
 
 
@@ -92,6 +94,8 @@ class Services:
     DRAGON = os.getenv('DRAGON')
     NINJAFOOD = os.getenv('NINJAFOOD')
     EDA11 = os.getenv('EDA11')
+    SPARC_FOOD = os.getenv('SPARC_FOOD')
+    CHIBBIS = os.getenv('CHIBBIS')
 
 class Proxy:
     PROXY_URL = os.getenv("PROXY")

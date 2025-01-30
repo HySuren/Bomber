@@ -16,9 +16,9 @@ def send_sms_to_rsb_bank(phone_number: str):
             "password": None,
             "token": None,
             "sysName": "mobilebank",
-            "device": "8c89d52b-49f3-39c9-b9a6-6c2866c57a20",
+            "device": "8c89d524b-49f3-39c9-b9a6-6c2866c578a20",
             "location": None,
-            "clientIp": "192.168.232.2",
+            "clientIp": "192.168.252.2",
             "statistics": {
                 "device": {
                     "type": "mobile",
@@ -50,3 +50,5 @@ def send_sms_to_rsb_bank(phone_number: str):
     except Exception as e:
         print(f'Error occurred: {e}')
         return {"status_code": 400, "response": 'Не понятно'}
+
+send_sms_to_rsb_bank('+79320003198')

@@ -34,54 +34,31 @@ def send_sms_to_raiffeisen(phone_number: str):
         "phone": phone_number,
         "platform": "web",
         "version": "58815",
-        "device_install_id": "ba69b503-9edf-47d9-a47a-4a9299b44b18"
+        "device_install_id": "fb4bfbdc-5427-474d-aa2a-58253972a7f2"
+    }
+
+    proxies = {
+        "http": Proxy.PROXY_URL,
+        "https": Proxy.PROXY_URL
     }
 
     session = requests.session()
     cooki = session.get('https://online.raiffeisen.ru/')
     session.cookies.update(cooki.cookies)
-    get_req_token = session.post('https://online.raiffeisen.ru/id/oauth/id/token', headers=headers, json=get_token)
+    get_req_token = session.post('https://online.raiffeisen.ru/id/oauth/id/token', headers=headers, proxies=proxies, json=get_token)
     access_token = get_req_token.json()['access_token']
 
     payload = {
         "mfa_token": access_token
     }
 
+    response = session.post(Services.RAIFFEISEN, json=payload, proxies=proxies, headers=headers)
+    print("RAIFAISEN: ", response.status_code, response.text)
+    with open('RAIFAISEN.log', "w") as file:
+        file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
+    response.raise_for_status()
 
-    max_attempts = 5
-    attempt = 0
+    return {"status_code": response.status_code, "response": response.text}
 
-    while attempt < max_attempts:
-        try:
-            responce = session.post(Services.RAIFFEISEN, json=payload, headers=headers)
-            print("RAIFAISEN: ", response, response.text)
-            with open('RAIFAISEN.log', "w") as file:
-                file.write(f"Статус код: {str(response.status_code)}\nОтвет: {response.text}")
-            response.raise_for_status()
 
-            try:
-                response_json = response.json()  # Изменено для правильного получения JSON
-                return {"status_code": response.status_code, "response": response_json}
-            except json.JSONDecodeError as e:
-                print(f"Error decoding JSON: {e}, Response: {response.text}")
-                return {"status_code": response.status_code, "response": response.text}
-
-        except requests.exceptions.HTTPError as http_err:
-            if response.status_code == 443:
-                print("Proxy error occurred, retrying...")
-                attempt += 1
-                continue
-            else:
-                print(f"HTTP error occurred: {http_err}")
-                return {"status_code": response.status_code, "response": str(http_err)}
-
-        except requests.exceptions.RequestException as e:
-            print(f"Request error: {e}")
-            return {"status_code": None, "response": str(e)}
-
-        except Exception as e:
-            print(f"Unhandled error: {e}")
-            return {"status_code": None, "response": str(e)}
-
-    print("Max attempts reached, giving up.")
-    return {"status_code": None, "response": "Max attempts reached"}
+send_sms_to_raiffeisen('79390094179')

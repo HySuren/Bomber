@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
+
 def get_cookies_and_headers(url, mode='default'):
     # Настройка опций для headless режима
     chrome_options = Options()
@@ -20,10 +21,14 @@ def get_cookies_and_headers(url, mode='default'):
 
         # Преобразуем куки в строку формата key=value
         cookie_string = "; ".join([f"{cookie['name']}={cookie['value']}" for cookie in cookies])
-        driver.quit()
+
         if mode == 'default':
             return cookie_string
         elif mode == 'sessid':
             return driver.session_id
+        elif mode == 'dicts':
+            # Создаем словарь с куками
+            cookie_dict = {cookie['name']: cookie['value'] for cookie in cookies}
+            return {"cookie": cookie_dict}
     finally:
-        pass
+        driver.quit()  # Закрываем драйвер в любом случае
