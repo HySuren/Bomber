@@ -86,6 +86,8 @@ def validate_and_format_number(phone_number: str, service_name: str = None) -> s
             pass
         elif service_name == 'CHIBBIS':
             pass
+        elif service_name == 'NADODENEG':
+            pass
         return phone_number
     except Exception as e:
         print(f"Ошибка валидации: {e}")

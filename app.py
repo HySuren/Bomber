@@ -49,6 +49,8 @@ from services.dragon_service import send_sms_to_dragon
 from services.katana_sushi_service import send_sms_to_ninjafood
 from services.eda11_service import send_sms_to_eda11
 from services.asscon import send_sms_to_chibbis
+from services.sushitut71_service import send_sms_to_sushitut
+from services.nadodeneg_service import send_sms_to_nadodeneg
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -365,6 +367,10 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_eda11(formatted_number)
                 case "40":
                     result = send_sms_to_chibbis(formatted_number)
+                case "41":
+                    result = send_sms_to_sushitut(formatted_number)
+                case "42":
+                    result = send_sms_to_nadodeneg(formatted_number)
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return {'delivered': False, 'response': 'нет такого сервиса'}
@@ -470,10 +476,10 @@ def startup():
     global service_threads
 
     high_priority_services = [("21", 2), ("25", 4), ("26", 4), ("6", 4),("19", 5), ("10", 5),("17", 4),("8", 4),("9", 4), ("18", 4), ("27", 4), ("28", 4), ("29", 4), ("30", 4)]
-    low_priority_services = [("22", 4), ("23", 4),("24", 4),("20", 4), ("7", 5),
+    low_priority_services = [("22", 4), ("23", 4), ("24", 4),("20", 4), ("7", 5),
                              ("14", 4), ("11", 4), ("13", 4), ("31", 4), ("32", 2),
                              ("33", 4), ("34", 4), ("35", 4), ("36", 4), ("37", 2),
-                             ("38", 4), ("40", 4)
+                             ("38", 4), ("40", 4), ("41", 4), ("42", 4)
                              ]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:

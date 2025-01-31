@@ -23,9 +23,6 @@ def send_sms_to_superapteka(phone_number: str):
         "https": Proxy.PROXY_URL
     }
 
-
-
-
     response = requests.post(url, headers=headers, proxies=proxies, json=data)
     print("YSAM: ", response, response.text)
     with open('ysam.log', "w") as file:
