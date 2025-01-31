@@ -19,6 +19,7 @@ def send_sms_to_nadodeneg(phone_number: str):
         "user-agent-data": "Windows 15.0.0 / fullVersionBrowser: 132.0.6834.111",
         "x-frontend": "prod-ru-nd-wp2_prod_develop"
     }
+    print(f'NADODENEG: {phone_number}')
 
     payload = {
     "mobile_phone": phone_number,
