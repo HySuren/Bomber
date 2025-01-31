@@ -21,7 +21,7 @@ def send_sms_to_nadodeneg(phone_number: str):
     }
 
     payload = {
-    "mobile_phone": phone_number[1::1],
+    "mobile_phone": phone_number,
     "step": "Step1",
     "target_url": "https://nadodeneg.ru/?utm_source=bankiru&utm_medium=affiliate&utm_campaign=bankiru_cps&click_id=24b94b045612a46bda614a1eff8d83a9&utm_term=bankiru&ndl",
     "requested_amount": 10000,
