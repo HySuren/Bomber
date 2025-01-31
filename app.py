@@ -49,7 +49,7 @@ from services.dragon_service import send_sms_to_dragon
 from services.katana_sushi_service import send_sms_to_ninjafood
 from services.eda11_service import send_sms_to_eda11
 from services.asscon import send_sms_to_chibbis
-from services.sushitut71_service import send_sms_to_sushitut
+from services.sushitut71_service import send_sms_to_mybox
 from services.nadodeneg_service import send_sms_to_nadodeneg
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -368,7 +368,7 @@ class SmsServiceThread(threading.Thread):
                 case "40":
                     result = send_sms_to_chibbis(formatted_number)
                 case "41":
-                    result = send_sms_to_sushitut(formatted_number)
+                    result = send_sms_to_mybox(formatted_number)
                 case "42":
                     result = send_sms_to_nadodeneg(formatted_number)
                 case _:
