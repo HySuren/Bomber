@@ -31,6 +31,7 @@ def send_sms_to_nadodeneg(phone_number: str):
     }
 
     response = requests.post('https://nadodeneg-api-gateway.srv.mendep.ru/user', json=payload, headers=headers)
+    print('NADODENEG: ',response.json())
     token = response.json()['token']
     user_id = response.json()['id']
     headers['x-authorization'] = f'Bearer {token}'
