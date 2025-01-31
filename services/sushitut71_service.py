@@ -42,6 +42,3 @@ def send_sms_to_mybox(phone_number: str):
     response = session.post(url, proxies=proxies, json=data, headers=headers)
     print(response.url)
     return {"status_code": response.status_code, "response": response.text}
-
-
-print(send_sms_to_mybox('+79309233612'))
