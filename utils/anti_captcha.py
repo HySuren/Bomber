@@ -1,16 +1,17 @@
 import requests
 import time
 
-API_URL = 'http://s1.c4ke.fun:1707'
+API_URL = 'https://api.2captcha.com'
 
-def create_task(site_key, url, captcha_type='RecaptchaV3TaskProxyless', min_score=0.7, api_key='653c26c15d1c8b667e3a1f61b8832b60'):
+def create_task(site_key, url, captcha_type='RecaptchaV3TaskProxyless', min_score=0.7, api_key='7f28bd13a451bd3a2b77ca5f30bf49a7'):
     """Создание задачи для решения капчи."""
     task = {
         'clientKey': api_key,
         'task': {
             'type': captcha_type,
             'websiteURL': url,
-            'websiteKey': site_key
+            'websiteKey': site_key,
+            "isInvisible": False
         }
     }
 
@@ -21,7 +22,7 @@ def create_task(site_key, url, captcha_type='RecaptchaV3TaskProxyless', min_scor
     return response.json()
 
 
-def get_task_result(task_id, api_key='653c26c15d1c8b667e3a1f61b8832b60'):
+def get_task_result(task_id, api_key='7f28bd13a451bd3a2b77ca5f30bf49a7'):
     """Получение результата решения капчи."""
     result_request = {
         'clientKey': api_key,
