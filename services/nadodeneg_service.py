@@ -1,4 +1,5 @@
 import requests
+from config import Proxy
 
 def send_sms_to_nadodeneg(phone_number: str):
     headers = {
@@ -30,7 +31,12 @@ def send_sms_to_nadodeneg(phone_number: str):
     "ga_cid": "1903338519.1738292500"
     }
 
-    response = requests.post('https://nadodeneg-api-gateway.srv.mendep.ru/user', json=payload, headers=headers)
+    proxies = {
+        "http": Proxy.PROXY_URL,
+        "https": Proxy.PROXY_URL
+    }
+
+    response = requests.post('https://nadodeneg-api-gateway.srv.mendep.ru/user', json=payload, proxies=proxies, headers=headers)
     print('NADODENEG: ',response.json())
     token = response.json()['token']
     user_id = response.json()['id']
@@ -40,5 +46,5 @@ def send_sms_to_nadodeneg(phone_number: str):
     "step": "Step2"
     }
 
-    response = requests.patch(f'https://nadodeneg-api-gateway.srv.mendep.ru/user/{user_id}', json=payload, headers=headers)
+    response = requests.patch(f'https://nadodeneg-api-gateway.srv.mendep.ru/user/{user_id}', json=payload, proxies=proxies, headers=headers)
     return {"status_code": response.status_code, "response": response.text}
