@@ -41,5 +41,6 @@ def send_sms_to_pm_ru(phone_number: str):
     }
 
     response = session.post(url, json=data, headers=headers, proxies=proxies)
+    print(f'PM_RU: {response.status_code}, {response.text}')
 
     return {"status_code": response.status_code, "response": 'good'}
