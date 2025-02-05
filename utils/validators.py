@@ -91,7 +91,7 @@ def validate_and_format_number(phone_number: str, service_name: str = None) -> s
         elif service_name == 'ECO_VPISKA':
             phone_number = f"+7 {phone_number[2:5]} {phone_number[5:8]}-{phone_number[8:10]}-{phone_number[10:]}"
         elif service_name == 'PM_RU':
-            phone_number = f"+7 {phone_number[2:5]} {phone_number[5:8]}-{phone_number[8:10]}-{phone_number[10:]}"
+            phone_number = f"+7 ({phone_number[2:5]}) {phone_number[5:8]}-{phone_number[8:10]}-{phone_number[10:]}"
         return phone_number
     except Exception as e:
         print(f"Ошибка валидации: {e}")
