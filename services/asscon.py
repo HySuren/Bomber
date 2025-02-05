@@ -1,12 +1,15 @@
 import requests
 from utils.anti_captcha import main, create_task, get_task_result
 from config import Services
+from utils.response_utils import save_logs
+import json
 
 def send_sms_to_chibbis(phone_number: str):
     url = Services.CHIBBIS
 
     session = requests.Session()
-    captcha = main(url='https://chibbis.ru/', captcha_type='RecaptchaV2TaskProxyless', site_key='6Lc92QoUAAAAANkFHHIwmosiM1E3k9JI88fyxVDf')
+    captcha = main(url='https://chibbis.ru', captcha_type='RecaptchaV2TaskProxyless',
+                   site_key='6Lc92QoUAAAAANkFHHIwmosiM1E3k9JI88fyxVDf')
 
     data = {
         "phone": phone_number[1::1]
@@ -30,6 +33,18 @@ def send_sms_to_chibbis(phone_number: str):
         "x-requested-with": "XMLHttpRequest"
     }
 
-
     response = session.post('https://chibbis.ru/webapi/auth/verification-code', json=data, headers=headers)
+
+    response_size = len(response.content) + len(json.dumps(dict(response.headers)))
+
+    save_logs(
+        service_name="CHIBBIS",
+        status_code=str(response.status_code),
+        response=response.content[:500],
+        domain="https://chibbis.ru",
+        weight=response_size,
+        headers=dict(response.headers),
+        body=response.json() if response.headers.get("Content-Type") == "application/json" else None
+    )
+
     return {"status_code": response.status_code, "response": 'good'}

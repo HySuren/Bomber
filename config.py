@@ -3,9 +3,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-services = ["6","7", "8", "9", "10", "11", "12", "13", "14",
-            "16", "17", "18", "19","20", "21", "22", "23", "24",
-            "25", "26", "27","28", "29", "30", "31", "32", "33",
+services = ["6", "7", "8", "9", "10", "11", "12", "13", "14",
+            "16", "17", "18", "19", "20", "21", "22", "23", "24",
+            "25", "26", "27", "28", "29", "30", "31", "32", "33",
             "34", "35", "36", "37", "38", "39", "40", "42"]
 
 service_names = {
@@ -55,12 +55,22 @@ class Databases:
     DBPORT = os.getenv("DBPORT")
 
 
+DB_CONFIG = {
+    "dbname": Databases.DBNAME,
+    "user": Databases.DBUSER,
+    "password": Databases.DBPASSWORD,
+    "host": Databases.DBHOST,
+    "port": Databases.DBPORT
+}
+
+
 class PhoneAgregator:
     API_TOKEN = os.getenv("API_TOKEN")
     GET_PHONE_NUMBER_URL = os.getenv("GET_PHONE_NUMBER_URL")
     CHECK_SMS_URL = os.getenv("CHECK_SMS_URL")
     RU_COUNTRY = os.getenv('RU_COUNTRY')
     RU_CARRIER = os.getenv('RU_CARRIER')
+
 
 class Services:
     AYURVEDA_URL = os.getenv("AYURVEDA")
@@ -98,6 +108,7 @@ class Services:
     SPARC_FOOD = os.getenv('SPARC_FOOD')
     CHIBBIS = os.getenv('CHIBBIS')
     MYBOX = os.getenv('MYBOX')
+
 
 class Proxy:
     PROXY_URL = os.getenv("PROXY")

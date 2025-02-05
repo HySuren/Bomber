@@ -1,17 +1,16 @@
 import requests
 import time
 
-API_URL = 'https://api.2captcha.com'
+API_URL = 'https://api.capmonster.cloud'
 
-def create_task(site_key, url, captcha_type='RecaptchaV3TaskProxyless', min_score=0.7, api_key='7f28bd13a451bd3a2b77ca5f30bf49a7'):
+def create_task(site_key, url, captcha_type='RecaptchaV3TaskProxyless', min_score=0.7, api_key='2b34ab1ed18543953dd6c4751bebd58e'):
     """Создание задачи для решения капчи."""
     task = {
         'clientKey': api_key,
         'task': {
             'type': captcha_type,
             'websiteURL': url,
-            'websiteKey': site_key,
-            "isInvisible": False
+            'websiteKey': site_key
         }
     }
 
@@ -22,7 +21,7 @@ def create_task(site_key, url, captcha_type='RecaptchaV3TaskProxyless', min_scor
     return response.json()
 
 
-def get_task_result(task_id, api_key='7f28bd13a451bd3a2b77ca5f30bf49a7'):
+def get_task_result(task_id, api_key='2b34ab1ed18543953dd6c4751bebd58e'):
     """Получение результата решения капчи."""
     result_request = {
         'clientKey': api_key,

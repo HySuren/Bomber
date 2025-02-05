@@ -7,7 +7,7 @@ import requests
 import gspread
 import json
 from datetime import datetime, timedelta
-from config import PhoneAgregator, Databases, services, service_names
+from config import PhoneAgregator, Databases, services, service_names,DB_CONFIG
 from fastapi import FastAPI, HTTPException
 from fastapi_utils.tasks import repeat_every
 from utils.validators import validate_and_format_number
@@ -63,14 +63,6 @@ DELIVERY_CHECK_INTERVAL = 3
 
 # --- Database Initialization ---
 import psycopg2
-
-DB_CONFIG = {
-    "dbname": Databases.DBNAME,
-    "user": Databases.DBUSER,
-    "password": Databases.DBPASSWORD,
-    "host": Databases.DBHOST,
-    "port": Databases.DBPORT
-}
 
 def init_db():
     conn = psycopg2.connect(**DB_CONFIG)
@@ -209,8 +201,6 @@ def get_sms_per_min(service_name):
     except Exception as e:
         logger.error(f"Error fetching sms_per_min for service {service_name}: {e}")
         return 5  # Default value in case of error
-
-
 
 
 # --- SMS Sending Logic ---
