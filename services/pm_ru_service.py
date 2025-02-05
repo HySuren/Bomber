@@ -8,8 +8,8 @@ from config import Services, Proxy
 from utils.response_utils import get_cookies_and_headers
 
 
-def send_sms_to_eco_vspishka(phone_number: str):
-    url = 'https://pm.ru/v2/api/auth/mobile'
+def send_sms_to_pm_ru(phone_number: str):
+    url = Services.PM_RU
 
     session = requests.Session()
     captcha = main(url='https://pm.ru', site_key='6Ld29rUqAAAAAGrJgIJiBpDnt35tVhIn-2mE9tF0')
@@ -34,12 +34,12 @@ def send_sms_to_eco_vspishka(phone_number: str):
         "accept": "application/json",
         "accept-encoding": "gzip, deflate, br, zstd",
         "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-        "content-type": "application/json",  # Измените на application/json если это требуется API
+        "content-type": "application/json",
         "origin": "https://pm.ru",
         "referer": "https://pm.ru/",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
     }
 
-    response = session.post(url, json=data, headers=headers)  # Обратите внимание на использование json=data
+    response = session.post(url, json=data, headers=headers)
 
     return {"status_code": response.status_code, "response": response.json()}
