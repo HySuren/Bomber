@@ -40,6 +40,6 @@ def send_sms_to_pm_ru(phone_number: str):
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
     }
 
-    response = session.post(url, json=data, headers=headers)
+    response = session.post(url, json=data, headers=headers, proxies=proxies)
 
-    return {"status_code": response.status_code, "response": response.json()}
+    return {"status_code": response.status_code, "response": 'good'}
