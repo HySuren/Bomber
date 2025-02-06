@@ -6,7 +6,7 @@ load_dotenv()
 services = ["6", "7", "8", "9", "10", "11", "12", "13", "14",
             "16", "17", "18", "19", "20", "21", "22", "23", "24",
             "25", "26", "27", "28", "29", "30", "31", "32", "33",
-            "34", "35", "36", "37", "38", "39", "40", "42", "43", "44"]
+            "34", "35", "36", "37", "38", "39", "40", "42", "43", "44", "45"]
 
 service_names = {
     "6": "BEAUTERY",
@@ -45,7 +45,8 @@ service_names = {
     "40": "CHIBBIS",
     "42": "NADODENEG",
     "43": "ECO_VPISKA",
-    "44": "PM_RU"
+    "44": "PM_RU",
+    "45": "LOCALCITHCEN"
 }
 
 
@@ -112,6 +113,7 @@ class Services:
     MYBOX = os.getenv('MYBOX')
     ECO_VPISKA = os.getenv('ECO_VPISKA')
     PM_RU = os.getenv('PM_RU')
+    LOCALCITHCEN = os.getenv('LOCALKITCHEN')
 
 class Proxy:
     PROXY_URL = os.getenv("PROXY")

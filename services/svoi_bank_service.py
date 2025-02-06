@@ -81,4 +81,3 @@ def send_sms_to_svoi(phone_number: str):
 
     print("Max attempts reached, giving up.")
     return {"status_code": None, "response": "Max attempts reached"}
-
