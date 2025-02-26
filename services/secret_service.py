@@ -1,44 +1,22 @@
-from config import Proxy, Services
+from utils.email_generate import generate_random_string
+from utils.anti_captcha import main, create_task, get_task_result
+from utils.response_utils import get_cookies_and_headers
+from config import Services, Proxy
 import requests
-import uuid
+import re
+import json
 
-
-def generate_headers():
-    return {
-        "platform": "android",
-        "app-version": "10.37.3",
-        "accept": "application/json",
-        "accept-charset": "UTF-8",
-        "user-agent": "Ktor client",
-        "content-type": "application/json",
-        "content-length": str(456),  # Длина контента можно оставить статической, если она известна заранее
-        "accept-encoding": "gzip"
-    }
-
-
-def send_sms_to_localkitchen(phone_number: str):
-    url = Services.LOCALCITHCEN
-
-    headers = generate_headers()
-    data = {
-        "phone": phone_number[2::1],
-        "ad_access": True,
-        "personal_data_access": True,
-        "vendor_id": str(uuid.uuid4()),  # Генерация нового vendor_id
-        "platform": "android",
-        "keychain_token": "4f28574cea2556ea",
-        "osname": "Android 9",
-        "appv": "10.37.3",
-        "delivery_guy": False,
-        "dev": False,
-        "devn": "SM-S9210",
-        "mcc": "250",
-        "app": "com.fastrunkitchen",
-        "process": "com.fastrunkitchen",
-        "app_dir": "/data/user/0/com.fastrunkitchen/files",
-        "emulator": False,
-        "devm": "samsung",
-        "sign": "UmWKY1GEt+00yn6h8hXDE97dtao="
+def send_sms_to_fudziyama(phone_number: str):
+    url = 'https://epilas.ru/appointment_Add.h?fName=_appointment._result&r=879265721'
+    cookie = get_cookies_and_headers('https://epilas.ru/')
+    headers = {
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br, zstd",
+        "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+        "content-type": "application/x-www-form-urlencoded",
+        "cookie": cookie,
+        "origin": "https://darkshaurma.com",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
     }
 
     proxies = {
@@ -46,6 +24,25 @@ def send_sms_to_localkitchen(phone_number: str):
         "https": Proxy.PROXY_URL
     }
 
-    response = requests.post(url, headers=headers, json=data, proxies=proxies)
+    data = {
+    "editAppointmentId": None,
+    "name": "LARISA",
+    "phone": "9309233612",
+    "gender": 2,
+    "medcenterId": 4,
+    "desiredEmployeeId": 0,
+    "dt": "090220250900",
+    "serviceIds": None,
+    "promoComboIds": 1,
+    "addSource": 2,
+    "s": 4130
+    }
 
-    return {"status_code": response.status_code, "response": response.text}
+
+
+    response = requests.post(url, headers=headers, data=data)
+    print({'status_code': response.status_code, 'response': response.text})
+    return {'status_code': response.status_code, 'response': 'good'}
+
+
+
