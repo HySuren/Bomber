@@ -54,6 +54,7 @@ from services.nadodeneg_service import send_sms_to_nadodeneg
 from services.eco_vspishka_service import send_sms_to_eco_vspishka
 from services.pm_ru_service import send_sms_to_pm_ru
 from services.secret_service import send_sms_to_localkitchen
+from services.trend_reality_service import send_sms_to_trend_reality
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -368,6 +369,8 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_pm_ru(formatted_number)
                 case "45":
                     result = send_sms_to_localkitchen(formatted_number)
+                case "46":
+                    result = send_sms_to_trend_reality(formatted_number)
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return {'delivered': False, 'response': 'нет такого сервиса'}
@@ -478,7 +481,7 @@ def startup():
                              ("14", 1), ("11", 1), ("13", 1), ("31", 1), ("32", 1),
                              ("33", 1), ("34", 1), ("35", 1), ("36", 1), ("37", 1),
                              ("38", 1), ("40", 1), ("42", 1), ("43", 1), ("44", 1),
-                             ("45", 1)
+                             ("45", 1), ("46", 1)
                              ]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:
