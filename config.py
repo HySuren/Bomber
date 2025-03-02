@@ -50,7 +50,18 @@ service_names = {
     "45": "LOCALCITHCEN",
     "46": 'TRENDREALITY',
     "47": 'WEBBANKIR',
-    "48": 'SROCHNODENGI'
+    "48": 'SROCHNODENGI',
+    "49": 'MIKROZAIM',
+    "50": 'VEGANEDA',
+    "51": 'DOSTUPNODENGI',
+    "52": 'FASTMANY',
+    "53": 'SANIAN',
+    "54": 'BARBARROSA',
+    "55": 'UTIMADENGI',
+    "56": 'SUPERCASH',
+    "57": 'FASTZAIM',
+    "58": 'VANILINA',
+    "59": 'SUPERPRAIM'
 }
 
 

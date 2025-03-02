@@ -377,6 +377,24 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_webbankir(formatted_number)
                 case "48":
                     result = send_sms_to_srochno_dengi(formatted_number)
+                case "49":
+                    result = send_sms_to_4lapy(formatted_number)
+                case "50":
+                    result = send_sms_to_akbars(formatted_number)
+                case "51":
+                    result = send_sms_to_aptech(formatted_number)
+                case "52":
+                    result = send_sms_to_thai_banki_ru(formatted_number)
+                case "53":
+                    result = send_sms_to_beautery(formatted_number)
+                case "54":
+                    result = send_sms_to_letai(formatted_number)
+                case "55":
+                    result = send_sms_to_prime(formatted_number)
+                case "56":
+                    result = send_sms_to_raiffeisen(formatted_number)
+                case "57":
+                    result = send_sms_to_trend_reality(formatted_number)
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return {'delivered': False, 'response': 'нет такого сервиса'}
@@ -487,7 +505,9 @@ def startup():
                              ("14", 1), ("11", 1), ("13", 1), ("31", 1), ("32", 1),
                              ("33", 1), ("34", 1), ("35", 1), ("36", 1), ("37", 1),
                              ("38", 1), ("40", 1), ("42", 1), ("43", 1), ("44", 1),
-                             ("45", 1), ("46", 1), ("47", 1), ("48", 1)
+                             ("45", 1), ("46", 1), ("47", 1), ("48", 1), ("49", 1),
+                             ("50", 1), ("51", 1), ("52", 1), ("53", 1), ("54", 1),
+                             ("55", 1), ("56", 1), ("57", 1), ("58", 1), ("59", 1)
                              ]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:

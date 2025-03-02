@@ -2,7 +2,7 @@ import requests
 from config import Proxy, Services
 
 
-def send_sms_to_aptech(phone_number: str):
+def send_sms_to_aptech(phone_number: str, proxy: str = Proxy.PROXY_URL):
     try:
         url = Services.APTECH
 
@@ -29,8 +29,8 @@ def send_sms_to_aptech(phone_number: str):
         }
 
         proxies = {
-            "http": Proxy.PROXY_URL,
-            "https": Proxy.PROXY_URL
+            "http": proxy,
+            "https": proxy
         }
 
         URL2 = 'https://aptechestvo.ru/ajax/new_app/sms/send_sms_code.php'

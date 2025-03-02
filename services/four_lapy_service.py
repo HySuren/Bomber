@@ -3,7 +3,7 @@ from config import Proxy, Services
 import json
 
 
-def send_sms_to_4lapy(phone_number: str):
+def send_sms_to_4lapy(phone_number: str, proxy: str = Proxy.PROXY_URL):
     url = Services.FOUR_LAPY
     headers = {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -15,8 +15,8 @@ def send_sms_to_4lapy(phone_number: str):
     }
 
     proxies = {
-        "http": Proxy.PROXY_URL,
-        "https": Proxy.PROXY_URL
+        "http": proxy,
+        "https": proxy
     }
     response = requests.post(url, headers=headers, data=data, proxies=proxies)
     try:

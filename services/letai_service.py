@@ -10,7 +10,7 @@ def generate_device_id(length=9):
     return ''.join(random.choice(characters) for i in range(length))
 
 
-def send_sms_to_letai(phone_number: str):
+def send_sms_to_letai(phone_number: str, proxy: str = Proxy.PROXY_URL):
     url = Services.LETAI
     headers = {
         "accept": "application/json, text/plain, */*",
@@ -33,8 +33,8 @@ def send_sms_to_letai(phone_number: str):
     }
 
     proxies = {
-        "http": Proxy.PROXY_URL,
-        "https": Proxy.PROXY_URL
+        "http": proxy,
+        "https": proxy
     }
 
     session = requests.session()
@@ -45,8 +45,10 @@ def send_sms_to_letai(phone_number: str):
         "phone": phone_number,
         "device_id": device_id
     }
-
-    response = session.post(url, json=data, headers=headers)
+    if proxy:
+        response = session.post(url, json=data, proxies=proxies, headers=headers)
+    else:
+        response = session.post(url, json=data, headers=headers)
     response.raise_for_status()
     print("LETAI: ", response, response.text)
     with open('LETAI.log', "w") as file:

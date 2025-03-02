@@ -1,7 +1,7 @@
 import requests
 from config import Proxy, Services
 
-def send_sms_to_akbars(phone_number: str):
+def send_sms_to_akbars(phone_number: str, proxy: str = Proxy.PROXY_URL):
     try:
         url = Services.AKBARS
 
@@ -36,8 +36,8 @@ def send_sms_to_akbars(phone_number: str):
         }
 
         proxies = {
-            "http": Proxy.PROXY_URL,
-            "https": Proxy.PROXY_URL
+            "http": proxy,
+            "https": proxy
         }
         session = requests.session()
 
