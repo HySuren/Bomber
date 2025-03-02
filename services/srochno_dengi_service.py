@@ -1,17 +1,19 @@
 import requests
 from config import Proxy, Services
+from utils.email_generate import generate_random_string
 import json
 
 
 def send_sms_to_srochno_dengi(phone_number: str):
     try:
         url = Services.SROCHNODENGI
+        random_char = generate_random_string()
         headers = {
             'Accept': 'application/json, text/plain, */*',
             'Accept-Encoding': 'gzip, deflate, br, zstd',
             'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
             'Content-Type': 'application/json',
-            'Hash': '1468460a0cab5eac4b079114d0d2bd6b214483f5843c87e4bc672de260a1c734',
+            'Hash': f'1468460a0cab5eac4b07{random_char}9114d0d2bd6b214483f5843c87e4bc672de260a1c734',
             'Origin': 'https://order.srochnodengi.ru',
             'Priority': 'u=1, i',
             'Referer': 'https://order.srochnodengi.ru/',
