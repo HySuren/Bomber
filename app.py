@@ -395,6 +395,8 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_raiffeisen(formatted_number)
                 case "57":
                     result = send_sms_to_trend_reality(formatted_number)
+                case "59":
+                    result = send_sms_to_nfapteka(formatted_number)
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return {'delivered': False, 'response': 'нет такого сервиса'}
