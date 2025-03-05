@@ -33,7 +33,7 @@ def send_sms_to_beautery(phone_number: str):
 
         # Нажимаем на кнопку
         login_button.click()
-        time.sleep(5)
+        time.sleep(6.5)
     finally:
         driver.quit()
         return {"status_code": 200, "response": 'гуд'}
