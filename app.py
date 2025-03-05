@@ -57,6 +57,7 @@ from services.secret_service import send_sms_to_localkitchen
 from services.trend_reality_service import send_sms_to_trend_reality
 from services.webbankir_service import send_sms_to_webbankir
 from services.srochno_dengi_service import send_sms_to_srochno_dengi
+from services.zaymigo_service import send_sms_to_zaymigo
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -397,6 +398,12 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_trend_reality(formatted_number)
                 case "59":
                     result = send_sms_to_nfapteka(formatted_number)
+                case "60":
+                    result = send_sms_to_zaymigo(formatted_number)
+                case "61":
+                    result = send_sms_to_zaymigo(formatted_number)
+                case "62":
+                    result = send_sms_to_zaymigo(formatted_number)
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return {'delivered': False, 'response': 'нет такого сервиса'}
