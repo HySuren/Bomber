@@ -58,6 +58,7 @@ from services.trend_reality_service import send_sms_to_trend_reality
 from services.webbankir_service import send_sms_to_webbankir
 from services.srochno_dengi_service import send_sms_to_srochno_dengi
 from services.zaymigo_service import send_sms_to_zaymigo
+from services.turbozaim_service import send_sms_to_turbozaim
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -404,6 +405,12 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_zaymigo(formatted_number)
                 case "62":
                     result = send_sms_to_zaymigo(formatted_number)
+                case "63":
+                    result = send_sms_to_turbozaim(formatted_number)
+                case "64":
+                    result = send_sms_to_turbozaim(formatted_number)
+                case "65":
+                    result = send_sms_to_turbozaim(formatted_number)
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return {'delivered': False, 'response': 'нет такого сервиса'}
@@ -516,7 +523,8 @@ def startup():
                              ("38", 1), ("40", 1), ("42", 1), ("43", 1), ("44", 1),
                              ("45", 1), ("46", 1), ("47", 1), ("48", 1), ("49", 1),
                              ("50", 1), ("51", 1), ("52", 1), ("53", 1), ("54", 1),
-                             ("55", 1), ("56", 1), ("57", 1), ("58", 1), ("59", 1),("60", 1),("61", 1),("62", 1)
+                             ("55", 1), ("56", 1), ("57", 1), ("58", 1), ("59", 1),
+                             ("60", 1),("61", 1),("62", 1),("63", 1),("64", 1),("65", 1)
                              ]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:
