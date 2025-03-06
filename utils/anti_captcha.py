@@ -31,6 +31,7 @@ def get_task_result(task_id, api_key='2b34ab1ed18543953dd6c4751bebd58e'):
     while True:
         response = requests.post(f'{API_URL}/getTaskResult', json=result_request)
         result = response.json()
+        print(result)
         if result['status'] == 'ready':
             return result['solution']['gRecaptchaResponse']
         elif result['status'] == 'processing':

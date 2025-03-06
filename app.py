@@ -61,6 +61,7 @@ from services.zaymigo_service import send_sms_to_zaymigo
 from services.turbozaim_service import send_sms_to_turbozaim
 from services.yuki_service import send_sms_to_prostoyvopros
 from services.boostra_service import send_sms_to_boostra
+from services.capitalina_service import send_sms_to_capitalina
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -439,6 +440,26 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "78":
                     result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                case "79":
+                    result = send_sms_to_capitalina(formatted_number)
+                case "80":
+                    result = send_sms_to_capitalina(formatted_number)
+                case "81":
+                    result = send_sms_to_capitalina(formatted_number)
+                case "82":
+                    result = send_sms_to_capitalina(formatted_number)
+                case "83":
+                    result = send_sms_to_capitalina(formatted_number)
+                case "84":
+                    result = send_sms_to_capitalina(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                case "85":
+                    result = send_sms_to_capitalina(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                case "86":
+                    result = send_sms_to_capitalina(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                case "87":
+                    result = send_sms_to_capitalina(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                case "88":
+                    result = send_sms_to_capitalina(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return {'delivered': False, 'response': 'нет такого сервиса'}
@@ -555,6 +576,7 @@ def startup():
                              ("60", 1),("61", 1),("62", 1),("63", 1),("64", 1),("65", 1),
                              ("66", 1),("67", 1),("68", 1),("69", 1),("70", 1),("71", 1),("72", 1)
                             , ("72", 1),("73", 1),("74", 1),("75", 1),("76", 1),("77", 1),("78", 1)
+                            , ("79", 1),("80", 1),("81", 1),("82", 1),("83", 1),("84", 1),("85", 1),("86", 1),("87", 1),("88", 1)
                              ]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:

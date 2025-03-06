@@ -160,6 +160,26 @@ def validate_and_format_number(phone_number: str, service_name: str = None) -> s
             pass
         elif service_name == "MOJENY":
             pass
+        elif service_name == "CAPITALINA":
+            pass
+        elif service_name == "SIKORSKY":
+            pass
+        elif service_name == "APPMANY":
+            pass
+        elif service_name == "CRESARRY":
+            pass
+        elif service_name == "FARMNET":
+            pass
+        elif service_name == "SUPERDROP":
+            pass
+        elif service_name == "FASTCASE":
+            pass
+        elif service_name == "SUPERINETNET":
+            pass
+        elif service_name == "LAKYMANY":
+            pass
+        elif service_name == "IZIMANY":
+            pass
         return phone_number
     except Exception as e:
         print(f"Ошибка валидации: {e}")
