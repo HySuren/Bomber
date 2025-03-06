@@ -60,6 +60,7 @@ from services.srochno_dengi_service import send_sms_to_srochno_dengi
 from services.zaymigo_service import send_sms_to_zaymigo
 from services.turbozaim_service import send_sms_to_turbozaim
 from services.yuki_service import send_sms_to_prostoyvopros
+from services.boostra_service import send_sms_to_boostra
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -418,6 +419,26 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_prostoyvopros(formatted_number)
                 case "68":
                     result = send_sms_to_prostoyvopros(formatted_number)
+                case "69":
+                    result = send_sms_to_boostra(formatted_number)
+                case "70":
+                    result = send_sms_to_boostra(formatted_number)
+                case "71":
+                    result = send_sms_to_boostra(formatted_number)
+                case "72":
+                    result = send_sms_to_boostra(formatted_number)
+                case "73":
+                    result = send_sms_to_boostra(formatted_number)
+                case "74":
+                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                case "75":
+                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                case "76":
+                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                case "77":
+                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                case "78":
+                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return {'delivered': False, 'response': 'нет такого сервиса'}
@@ -532,7 +553,8 @@ def startup():
                              ("50", 1), ("51", 1), ("52", 1), ("53", 1), ("54", 1),
                              ("55", 1), ("56", 1), ("57", 1), ("58", 1), ("59", 1),
                              ("60", 1),("61", 1),("62", 1),("63", 1),("64", 1),("65", 1),
-                             ("66", 1),("67", 1),("68", 1)
+                             ("66", 1),("67", 1),("68", 1),("69", 1),("70", 1),("71", 1),("72", 1)
+                            , ("72", 1),("73", 1),("74", 1),("75", 1),("76", 1),("77", 1),("78", 1)
                              ]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:
