@@ -66,7 +66,7 @@ def send_sms_to_prostoyvopros(phone_number: str):
         checkbox2.click()
         phone.submit()
 
-        time.sleep(8000)
+        time.sleep(8)
     except Exception as error:
         print(type(error), error)
     finally:
