@@ -526,35 +526,6 @@ class SmsServiceThread(threading.Thread):
             logger.error(f"Error updating stats in database: {e}")
 
 
-# --- Report Generation ---
-def generate_report(sheet, interval_minutes):
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        end_time = datetime.now()
-        start_time = end_time - timedelta(minutes=interval_minutes)
-        cursor.execute(
-            """SELECT service_name, SUM(delivered), SUM(not_delivered)
-            FROM sms_stats WHERE timestamp BETWEEN ? AND ? GROUP BY service_name""",
-            (start_time, end_time)
-        )
-        rows = cursor.fetchall()
-        if not rows:
-            logger.warning(f"Нет данных для отчёта за последние {interval_minutes} минут.")
-            return
-        logger.info(f"Данные для отчёта: {rows}")
-        timestamp = end_time.strftime("%Y-%m-%d %H:%M:%S")
-        sheet.append_row(
-            ["Service", "Delivered", "Not Delivered", "Timestamp", f"Отчет за последние {interval_minutes}"])
-
-        for row in rows:
-            sheet.append_row([row[0], row[1], row[2], timestamp])
-
-        conn.close()
-    except Exception as e:
-        logger.error(f"Ошибка при генерации отчёта: {e}")
-
-
 # --- FastAPI App ---
 app = FastAPI()
 
