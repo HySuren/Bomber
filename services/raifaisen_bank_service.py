@@ -2,7 +2,7 @@ import requests
 from config import Proxy, Services
 
 
-def send_sms_to_raiffeisen(phone_number: str):
+def send_sms_to_raiffeisen(phone_number: str, proxy: str = Proxy.PROXY_URL):
     headers = {
         "accept": "application/json, text/plain, */*",
         "accept-encoding": "gzip, deflate, br, zstd",
@@ -38,8 +38,8 @@ def send_sms_to_raiffeisen(phone_number: str):
     }
 
     proxies = {
-        "http": Proxy.PROXY_URL,
-        "https": Proxy.PROXY_URL
+        "http": proxy,
+        "https": proxy
     }
 
     session = requests.session()

