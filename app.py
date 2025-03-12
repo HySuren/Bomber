@@ -230,6 +230,7 @@ class SmsServiceThread(threading.Thread):
         return get_sms_per_min(service_name)
 
     def run(self):
+        time_to_wait = (60 / self.sms_per_min) - time_since_last_sent
         while not self.stop_event.is_set():
             try:
                 now = time.time()
@@ -249,7 +250,6 @@ class SmsServiceThread(threading.Thread):
                         self.update_stats(delivered=response_data.get('delivered'), response_data=response_data.get('response'))  # Записываем статистику с ответом от сервиса
                         self.last_sent_timestamp = time.time()
                 else:
-                    time_to_wait = (60 / self.sms_per_min) - time_since_last_sent
                     logger.info(f"Waiting for {time_to_wait} seconds before next SMS...")
                     time.sleep(time_to_wait)
             except Exception as e:
