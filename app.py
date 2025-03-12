@@ -230,12 +230,10 @@ class SmsServiceThread(threading.Thread):
         return get_sms_per_min(service_name)
 
     def run(self):
+        time_since_last_sent = time.time() - self.last_sent_timestamp
         time_to_wait = (60 / self.sms_per_min) - time_since_last_sent
         while not self.stop_event.is_set():
             try:
-                now = time.time()
-                time_since_last_sent = now - self.last_sent_timestamp
-
                 if time_since_last_sent >= (60 / self.sms_per_min):  # Проверяем, прошло ли достаточно времени
                     service_name = service_names[self.service_id]
                     if not is_service_enabled(service_name):
