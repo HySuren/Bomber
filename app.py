@@ -230,11 +230,11 @@ class SmsServiceThread(threading.Thread):
         return get_sms_per_min(service_name)
 
     def run(self):
-        now = time.time()
-        time_since_last_sent = now - self.last_sent_timestamp
-        time_to_wait = (60 / self.sms_per_min) - time_since_last_sent
         while not self.stop_event.is_set():
             try:
+                now = time.time()
+                time_since_last_sent = now - self.last_sent_timestamp
+                time_to_wait = (60 / self.sms_per_min) - time_since_last_sent
                 if time_since_last_sent >= (60 / self.sms_per_min):  # Проверяем, прошло ли достаточно времени
                     service_name = service_names[self.service_id]
                     if not is_service_enabled(service_name):
@@ -252,8 +252,7 @@ class SmsServiceThread(threading.Thread):
                     logger.info(f"Waiting for {time_to_wait} seconds before next SMS...")
                     time.sleep(time_to_wait)
             except Exception as e:
-                logger.error(f"Error in service {self.service_id}: {e} he go sleep {time_to_wait}")
-                time.sleep(time_to_wait)
+                logger.error(f"Error in service {self.service_id}: {e}")
 
     def stop(self):
         self.stop_event.set()
