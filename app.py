@@ -296,15 +296,15 @@ class SmsServiceThread(threading.Thread):
                 case "1":
                     result = send_sms_to_dommalera(formatted_number)
                 case "2":
-                    result = send_sms_to_4lapy(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                    result = send_sms_to_4lapy(formatted_number)
                 case "6":
                     result = send_sms_to_beautery(formatted_number)
                 case "4":
                     result = send_sms_to_thai_banki_ru(formatted_number)
                 case "7":
-                    result = send_sms_to_thai_banki_ru(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                    result = send_sms_to_thai_banki_ru(formatted_number)
                 case "8":
-                    result = send_sms_to_4lapy(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                    result = send_sms_to_4lapy(formatted_number, proxy='socks5h://EBYbFe:bedARGYYMepR@gproxy.site:12754')
                 case "9":
                     result = send_sms_to_obi(formatted_number)
                 case "10":
@@ -322,7 +322,7 @@ class SmsServiceThread(threading.Thread):
                 case "16":
                     result = send_sms_to_ayurveda(formatted_number)
                 case "17":
-                    result = send_sms_to_raiffeisen(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                    result = send_sms_to_raiffeisen(formatted_number, proxy='socks5h://EBYbFe:bedARGYYMepR@gproxy.site:12754')
                 case "18":
                     result = send_sms_to_superapteka(formatted_number)
                 case "19":
