@@ -50,7 +50,7 @@ def send_sms_to_capitalina(phone_number: str, proxy: str = Proxy.PROXY_URL):
         time.sleep(0.2)
         phone.send_keys(phone_number[10])
         time.sleep(0.2)
-        phone.send_keys(phone_number[10])
+        phone.send_keys(phone_number[11])
         last_n.send_keys('Михаилович')
         surname.send_keys('Прохоров')
         first_n.send_keys('Андрей')

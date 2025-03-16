@@ -62,6 +62,7 @@ from services.turbozaim_service import send_sms_to_turbozaim
 from services.yuki_service import send_sms_to_prostoyvopros
 from services.boostra_service import send_sms_to_boostra
 from services.capitalina_service import send_sms_to_capitalina
+from services.medium_score import send_sms_to_medium
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -459,6 +460,30 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_capitalina(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
                 case "88":
                     result = send_sms_to_capitalina(formatted_number, proxy='socks5h://c4ke:Zz123654@bproxy.site:15008')
+                case "89":
+                    result = send_sms_to_zaymigo(formatted_number)
+                case "90":
+                    result = send_sms_to_zaymigo(formatted_number)
+                case "91":
+                    result = send_sms_to_zaymigo(formatted_number)
+                case "92":
+                    result = send_sms_to_zaymigo(formatted_number)
+                case "91":
+                    result = send_sms_to_zaymigo(formatted_number)
+                case "92":
+                    result = send_sms_to_zaymigo(formatted_number)
+                case "93":
+                    result = send_sms_to_zaymigo(formatted_number)
+                case "94":
+                    result = send_sms_to_medium(formatted_number)
+                case "95":
+                    result = send_sms_to_medium(formatted_number)
+                case "96":
+                    result = send_sms_to_medium(formatted_number)
+                case "97":
+                    result = send_sms_to_medium(formatted_number)
+                case "98":
+                    result = send_sms_to_medium(formatted_number)
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return {'delivered': False, 'response': 'нет такого сервиса'}
@@ -543,10 +568,14 @@ def startup():
                              ("45", 1), ("46", 1), ("47", 1), ("48", 1), ("49", 1),
                              ("50", 1), ("51", 1), ("52", 1), ("53", 1), ("54", 1),
                              ("55", 1), ("56", 1), ("57", 1), ("58", 1), ("59", 1),
-                             ("60", 1),("61", 1),("62", 1),("63", 1),("64", 1),("65", 1),
-                             ("66", 1),("67", 1),("68", 1),("69", 1),("70", 1),("71", 1),("72", 1)
-                            , ("72", 1),("73", 1),("74", 1),("75", 1),("76", 1),("77", 1),("78", 1)
-                            , ("79", 1),("80", 1),("81", 1),("82", 1),("83", 1),("84", 1),("85", 1),("86", 1),("87", 1),("88", 1)
+                             ("60", 1), ("61", 1), ("62", 1), ("63", 1), ("64", 1),
+                             ("65", 1), ("66", 1), ("67", 1), ("68", 1), ("69", 1),
+                             ("70", 1), ("71", 1), ("72", 1), ("72", 1), ("73", 1),
+                             ("74", 1), ("75", 1), ("76", 1), ("77", 1), ("78", 1),
+                             ("79", 1), ("80", 1), ("81", 1), ("82", 1), ("83", 1),
+                             ("84", 1), ("85", 1), ("86", 1), ("87", 1), ("88", 1),
+                             ("89", 1), ("90", 1), ("91", 1), ("92", 1), ("93", 1),
+                             ("94", 1), ("95", 1), ("96", 1), ("97", 1), ("98", 1),
                              ]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:
