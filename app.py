@@ -63,6 +63,7 @@ from services.yuki_service import send_sms_to_prostoyvopros
 from services.boostra_service import send_sms_to_boostra
 from services.capitalina_service import send_sms_to_capitalina
 from services.medium_score import send_sms_to_medium
+from services.dengi_na_dom_service import send_sms_to_dengi_na_dom
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -484,6 +485,8 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_medium(formatted_number)
                 case "98":
                     result = send_sms_to_medium(formatted_number)
+                case "99":
+                    result = send_sms_to_dengi_na_dom(formatted_number)
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return {'delivered': False, 'response': 'нет такого сервиса'}
@@ -576,6 +579,7 @@ def startup():
                              ("84", 1), ("85", 1), ("86", 1), ("87", 1), ("88", 1),
                              ("89", 1), ("90", 1), ("91", 1), ("92", 1), ("93", 1),
                              ("94", 1), ("95", 1), ("96", 1), ("97", 1), ("98", 1),
+                             ("99", 1)
                              ]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:
