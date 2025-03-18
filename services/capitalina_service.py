@@ -16,7 +16,7 @@ from selenium.webdriver.chrome.options import Options
 
 def send_sms_to_capitalina(phone_number: str, proxy: str = Proxy.PROXY_URL):
     # Установка драйвера Chrome
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+    driver = webdriver.Chrome(service=ChromeService(executable_path='C:\\Users\\Danya\\Downloads\\chromedriver-win32\\chromedriver-win32\\chromedriver.exe'))
 
     try:
         # Открываем нужный URL

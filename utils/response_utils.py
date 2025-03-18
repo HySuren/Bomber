@@ -13,7 +13,7 @@ def get_cookies_and_headers(url, mode='default'):
     chrome_options.add_argument("--headless")
 
     # Создаем экземпляр веб-драйвера
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+    driver = webdriver.Chrome(service=ChromeService(executable_path='C:\\Users\\Danya\\Downloads\\chromedriver-win32\\chromedriver-win32\\chromedriver.exe'))
 
     try:
         driver.get(url)

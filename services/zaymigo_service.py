@@ -14,7 +14,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 def send_sms_to_zaymigo(phone_number: str):
 
     # Установка драйвера Chrome
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+    driver = webdriver.Chrome(service=ChromeService(executable_path='C:\\Users\\Danya\\Downloads\\chromedriver-win32\\chromedriver-win32\\chromedriver.exe'))
     random_chars = generate_random_string()
     try:
         # Открываем нужный URL

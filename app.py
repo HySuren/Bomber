@@ -64,6 +64,13 @@ from services.boostra_service import send_sms_to_boostra
 from services.capitalina_service import send_sms_to_capitalina
 from services.medium_score import send_sms_to_medium
 from services.dengi_na_dom_service import send_sms_to_dengi_na_dom
+from services.sms_finance_service import send_sms_to_sms_finance
+from services.prostoi_vopros_service import send_sms_to_prostoy_vopros
+from services.mig_credit_service import send_sms_to_adengi
+from services.greenmany_service import send_sms_to_vivadenqi
+from services.centro_finance_service import send_sms_to_caranqa
+from services.cash_drive_service import send_sms_to_cash_drive
+from services.bistrodengi_service import send_sms_to_bistrodengi
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -487,6 +494,22 @@ class SmsServiceThread(threading.Thread):
                     result = send_sms_to_medium(formatted_number)
                 case "99":
                     result = send_sms_to_dengi_na_dom(formatted_number)
+                case "100":
+                    result = send_sms_to_sms_finance(formatted_number)
+                case "101":
+                    result = send_sms_to_prostoy_vopros(formatted_number)
+                case "102":
+                    result = send_sms_to_adengi(formatted_number)
+                case "103":
+                    result = send_sms_to_vivadenqi(formatted_number)
+                case "103":
+                    result = send_sms_to_caranqa(formatted_number)
+                case "104":
+                    result = send_sms_to_cash_drive(formatted_number)
+                case "105":
+                    result = send_sms_to_bistrodengi(formatted_number)
+                case "106":
+                    result = send_sms_to_dengi_na_dom(formatted_number)
                 case _:
                     logger.error(f"Service ID {self.service_id} is not supported.")
                     return {'delivered': False, 'response': 'нет такого сервиса'}
@@ -579,7 +602,8 @@ def startup():
                              ("84", 1), ("85", 1), ("86", 1), ("87", 1), ("88", 1),
                              ("89", 1), ("90", 1), ("91", 1), ("92", 1), ("93", 1),
                              ("94", 1), ("95", 1), ("96", 1), ("97", 1), ("98", 1),
-                             ("99", 1)
+                             ("99", 1), ("100", 1), ("101", 1), ("102", 1), ("103", 1),
+                             ("104", 1), ("105", 1), ("106", 1)
                              ]
 
     for service_id, rate_limit in high_priority_services + low_priority_services:
